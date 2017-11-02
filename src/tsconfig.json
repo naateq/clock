@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "module": "amd", // 'none', 'commonjs', 'amd', 'system', 'umd', 'es6', or 'es2015'.
+        "target": "es5"
+    },
+
+    "files": [
+        "src/tools/numbers.ts"
+        //,"src/tools/tools.ts"
+    ],
+
+    "include": [
+        "Contents/htmls/script_start.html",
+        "Contents/htmls/script_end.html",
+        "Contents/styles/*.css",
+        "Contents/histories/*.js"
+    ],
+
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
