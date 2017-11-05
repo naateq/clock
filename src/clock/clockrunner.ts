@@ -4,19 +4,19 @@
 var clockRunner = <AnalogClockRunner>{};
 
 clockRunner.init = function(): void {
-    var cosmicDuration: number = tmanager.toTime.totalInMillis - tmanager.fromTime.totalInMillis;
+    var cosmicDuration: number = timemanager.config.toTime.totalInMillis - timemanager.config.fromTime.totalInMillis;
     var thisClockDuration: number = this.totalHours * numbers.MillisInHour;
     this.cosmicMillisPerClockMillis =  Math.ceil(cosmicDuration / thisClockDuration) || 1;
 
-    // tmanager won't slow down the clock, it would fast-up the cosmic time (tick) move
-    tmanager.cosmicMillisPerClockMillis = this.cosmicMillisPerClockMillis;
-    this.cosmicMonthsPerClockUnit = tmanager.cosmicMillisPerClockMillis / numbers.MillisInMonth;
+    // timemanager won't slow down the clock, it would fast-up the cosmic time (tick) move
+    timemanager.config.cosmicMillisPerClockMillis = this.cosmicMillisPerClockMillis;
+    this.cosmicMonthsPerClockUnit = timemanager.config.cosmicMillisPerClockMillis / numbers.MillisInMonth;
 };
 
 clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): void {
     // translate cosmic time into clock time
     this.currentClockTime.totalInMillis = elapsedTime.totalInMillis / this.cosmicMillisPerClockMillis;
-    this.currentClockTime = tmanager.fixTimeFromTotalInMillis(this.currentClockTime, false);
+    this.currentClockTime = timemanager.fixTimeFromTotalInMillis(this.currentClockTime, false);
     
     var dialFillStyle: string = '#666699';
     var borderFillStyle: string = '#9999ff'; // '#66669f';
@@ -49,14 +49,14 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
         this.currentClockTime.hour,
         this.currentClockTime.minute,
         this.currentClockTime.second,
-        tmanager.clockTimeCompressionFactor >= 3600,
-        tmanager.clockTimeCompressionFactor >= 60);
+        timemanager.config.clockTimeCompressionFactor >= 3600,
+        timemanager.config.clockTimeCompressionFactor >= 60);
     
     // display year at 6`o clock
-    this.clockView.renderTextOnRadial(6, calendar.fromParsedYear(tmanager.currTime.year), dialMarkersFillStyle);
+    this.clockView.renderTextOnRadial(6, calendar.fromParsedYear(timemanager.config.currTime.year), dialMarkersFillStyle);
 
-    if (tmanager.clockTimeCompressionFactor < 1800 && this.cosmicMonthsPerClockUnit <= 1) {
-        this.clockView.renderTextOnRadial(9, (1 + tmanager.currTime.month));
+    if (timemanager.config.clockTimeCompressionFactor < 1800 && this.cosmicMonthsPerClockUnit <= 1) {
+        this.clockView.renderTextOnRadial(9, (1 + timemanager.config.currTime.month));
     }
 };
 
@@ -66,5 +66,5 @@ clockRunner.clock = function(canvas: HTMLCanvasElement, clockHours: number) {
     this.cosmicMillisPerClockMillis = 1;
     this.currentClockTime = <CosmicTime>{ totalInMillis: 0 };
 
-    tmanager.addRunner(this);
+    timemanager.addRunner(this);
 }

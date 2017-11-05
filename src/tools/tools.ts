@@ -51,7 +51,7 @@ namespace utils {
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         }
     
-        export function setParametersFromUrl(parameterNames: string[]) {
+        export function setParametersFromUrl(parameterNames: string[]): void {
             var url = window.location.search;
             if (url) {
                 for (var i = 0; i < parameterNames.length; i++) {
@@ -89,11 +89,11 @@ namespace utils {
             return oldValue;
         }
     
-        export function logTimers() {
-            console.log('from: ' + cosmicTimeToString(tmanager.fromTime));
-            console.log('to: ' + cosmicTimeToString(tmanager.toTime));
-            console.log('elapsed: ' + cosmicTimeToString(tmanager.elapsedTime));
-            //console.log('cosmicMillisPerClockMillis: ' + tmanager.cosmicMillisPerClockMillis);
+        export function logTimers(): void {
+            console.log('from: ' + cosmicTimeToString(timemanager.config.fromTime));
+            console.log('to: ' + cosmicTimeToString(timemanager.config.toTime));
+            console.log('elapsed: ' + cosmicTimeToString(timemanager.config.elapsedTime));
+            //console.log('cosmicMillisPerClockMillis: ' + timemanager.cosmicMillisPerClockMillis);
         }
     
         export function setSpeed(speed?: number): boolean {
@@ -105,13 +105,13 @@ namespace utils {
                     speed = parseInt(speedParameterValue) || speed;
             }
     
-            tmanager.clockTimeCompressionFactor = speed;
+            timemanager.config.clockTimeCompressionFactor = speed;
             return false;
         }
     
         export function toggleTimePause(): boolean {
-            tmanager.timePaused = !tmanager.timePaused;
-            if (!tmanager.timePaused) {
+            timemanager.config.timePaused = !timemanager.config.timePaused;
+            if (!timemanager.config.timePaused) {
                 setSpeed();
             }
     

@@ -1,0 +1,228 @@
+#cosmictime {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 36pt;
+    color: navy;
+    font-weight: 900;
+    font-stretch: extra-expanded;
+}
+
+#contents {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20pt;
+    color:midnightblue;
+    font-weight: 200;
+}
+
+div#contents {
+    margin: 2px;
+    border: 2px solid #ceceff;
+    padding: 10px;
+}
+
+/*
+*  https://codepen.io/GhostRider/pen/GHaFw
+*  STYLE 1
+*/
+
+#style-1::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+/*
+*  STYLE 2
+*/
+
+#style-2::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#style-2::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+#style-2::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #D62929;
+}
+
+/*
+*  STYLE 15
+*/
+
+#style-15::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+#style-15::-webkit-scrollbar
+{
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+#style-15::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: #FFF;
+    background-image: -webkit-gradient(linear,
+            40% 0%,
+            75% 84%,
+            from(#4D9C41),
+            to(#19911D),
+            color-stop(.6,#54DE5D))
+}
+
+/*
+*  STYLE 16
+*/
+
+#style-16::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+#style-16::-webkit-scrollbar
+{
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+#style-16::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background-color: #FFF;
+    background-image: -webkit-linear-gradient(top,
+                                            #e4f5fc 0%,
+                                            #bfe8f9 50%,
+                                            #9fd8ef 51%,
+                                            #2ab0ed 100%);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 16px 0px rgba(24,24,127,0.2);
+    padding: 8px 4px;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.menuitem {
+    padding: 5px 10px 5px 10px;
+    white-space:pre;
+    font-family:monospace, 'Courier New', Courier;
+    font-weight: 500;
+}
+
+.atable
+{
+    display:  table;
+    width: 100%;
+    height: 100%;
+    background-color:#ffffff;
+    /*border:1px solid  #666666; */
+    border-spacing: 5px;     /*cellspacing:poor IE support for  this*/
+    padding: 5px 5px 5px 5px;
+    /* border-collapse:separate;*/
+}
+
+.arow
+{
+    display:table-row;
+    /*width:auto;*/
+}
+
+.acell
+{
+    float:left;     /*fix for  buggy browsers*/
+    display:table-column;
+    /*width:200px;*/
+    /*background-color:#ccc;*/
+}
+
+.wrapper
+{
+    text-align: left;
+    margin: auto;
+    margin-top: 10pt;
+    padding: 10pt;
+}
+
+.scrollbar
+{
+    margin-left: 30px;
+    float: left;
+    background: #F5F5F5;
+    overflow-y: scroll;
+    margin-bottom: 25px;
+}
+
+.force-overflow {
+    min-height: 200px;
+    width: 600px;
+    height:400px;
+}
+
+.historymsg {
+    width: 600px;
+    height: 1.5em;
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 500;
+    color: #333366;
+    background-color: #fefefe;
+}
+
+.historymsg:hover {
+    font-weight: 900;
+    color: #fefefe;
+    background-color: #333366;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes highlightfade {
+    from {background-color: #ceceff;}
+    to {background-color: #fefefe;}
+}
+
+/* Standard syntax */
+@keyframes highlightfade {
+    from {background-color: #ceceff;}
+    to {background-color: #fefefe;}
+}

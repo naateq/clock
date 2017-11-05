@@ -43,7 +43,7 @@ function runHistory(ahist: History) {
     if (!toYearText)
         toYearText = utils.getElementValue('toYear');
 
-    tmanager.init(fromYearText, toYearText);
+    timemanager.init(fromYearText, toYearText);
     utils.logTimers();
 
     var canvas = <HTMLCanvasElement>document.getElementById("canvas");
@@ -57,5 +57,5 @@ function runHistory(ahist: History) {
     historyRunner.historyView(contentsEl, ahist);
 
     utils.setSpeed();
-    tmanager.runTime();
+    timemanager.runTime();
 }

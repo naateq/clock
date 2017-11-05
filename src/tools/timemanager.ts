@@ -1,60 +1,60 @@
 /// <reference path="../../typings/clock/clock.d.ts" />
 /// <reference path="calendar.ts" />
 
-namespace tmanager {
-    
-        // unit of time is millis in this namespace
-        export var fromTime: CosmicTime;
-        export var toTime: CosmicTime;
-        export var currTime: CosmicTime;
-        export var elapsedTime: CosmicTime;
-    
-        export var timePaused: boolean;
+namespace timemanager {
+        export var config = <Config> {
+            // unit of time is millis in this namespace
+            fromTime: <CosmicTime>null,
+            toTime: <CosmicTime>null,
+            currTime: <CosmicTime>null,
+            elapsedTime: <CosmicTime>null,
+            timePaused: <boolean>false,
+            
+            /** 
+             * This is the lag (in millis) between two updates
+             */
+            timerUpdateInterval: <number>100,
         
-        /** 
-         * This is the lag (in millis) between two updates
-         */
-        export var timerUpdateInterval: number = 100;
-    
-        /** 
-         * This factor keeps the clock running at the consistent pace irrespective of cosmic duration.
-         * One of the runners sets this factor based on the cosmic duration and the number of hours 
-         * (12 or 24) in the clock to run. i.e. (cosmic_duration / clock_duration)
-         */
-        export var cosmicMillisPerClockMillis: number = 1;
-    
-        /**
-         * Amount of clock time to compress per unit of clock time, to make the clock run faster.
-         * Setting it to 3600 means, the clock will traverse one hour during a one second period
-         * and, as such, complete 24 hours in 24 seconds.
-         */
-        export var clockTimeCompressionFactor: number = 1;
-    
+            /** 
+             * This factor keeps the clock running at the consistent pace irrespective of cosmic duration.
+             * One of the runners sets this factor based on the cosmic duration and the number of hours 
+             * (12 or 24) in the clock to run. i.e. (cosmic_duration / clock_duration)
+             */
+            cosmicMillisPerClockMillis: <number>1,
+        
+            /**
+             * Amount of clock time to compress per unit of clock time, to make the clock run faster.
+             * Setting it to 3600 means, the clock will traverse one hour during a one second period
+             * and, as such, complete 24 hours in 24 seconds.
+             */
+            clockTimeCompressionFactor: <number>1
+        };
+
         /** Initializes fromTime, toTime, currTime and elapsedTime */
-        export function init(fromTimeStr: string, toTimeStr: string) {
-            fromTime = parseTimeString(fromTimeStr, false);
-            toTime = parseTimeString(toTimeStr, true);
-            currTime = fromTime;
+        export var init: Init = function(fromTimeStr: string, toTimeStr: string): void {
+            config.fromTime = <CosmicTime>parseTimeString(fromTimeStr, false);
+            config.toTime = <CosmicTime>parseTimeString(toTimeStr, true);
+            config.currTime = <CosmicTime>config.fromTime;
     
-            elapsedTime = <CosmicTime>{ totalInMillis: 0 };
-            elapsedTime = fixTimeFromTotalInMillis(elapsedTime);
-        }
+            config.elapsedTime = <CosmicTime>{ totalInMillis: 0 };
+            config.elapsedTime = <CosmicTime>fixTimeFromTotalInMillis(config.elapsedTime, false);
+        };
     
         /** Moves the time by 1/unitsToJump millis and returns the elapsed time */
-        export function tick(unitsToJump?: number) : CosmicTime {
+        export var tick: Tick = function(unitsToJump?: number) : CosmicTime {
             if (!unitsToJump)
                 unitsToJump = 1;
             
-            elapsedTime.totalInMillis += unitsToJump;
-            elapsedTime = fixTimeFromTotalInMillis(elapsedTime);
+                config.elapsedTime.totalInMillis += unitsToJump;
+                config.elapsedTime = fixTimeFromTotalInMillis(config.elapsedTime, false);
     
-            currTime.totalInMillis += unitsToJump;
-            currTime = fixTimeFromTotalInMillis(currTime);
+                config.currTime.totalInMillis += unitsToJump;
+                config.currTime = fixTimeFromTotalInMillis(config.currTime, false);
     
-            return elapsedTime;
-        }
+            return config.elapsedTime;
+        };
     
-        export function fixTimeFromTotalInMillis(currTime: CosmicTime, preventNegative: boolean = false) : CosmicTime {
+        export var fixTimeFromTotalInMillis: FixTimeFromTotalInMillis = function(currTime: CosmicTime, preventNegative?: boolean) : CosmicTime {
             var remainingMillis: number = currTime.totalInMillis;
             var bceSign: number = +1;
             if (remainingMillis < 0) {
@@ -101,10 +101,10 @@ namespace tmanager {
             currTime.year *= bceSign;
     
             return currTime;
-        }
+        };
     
         /** Converts the time string into individual components - year, month, day, hour, minute, second, millis and totalInMillis. */
-        function parseTimeString(timeStr: string, isEndTime: boolean) : CosmicTime {
+        export var parseTimeString: ParseTimeString = function(timeStr: string, isEndTime: boolean) : CosmicTime {
             var cosmicTime = <CosmicTime>{};
             cosmicTime.timestr = timeStr || nowTimeString(false);
     
@@ -157,10 +157,10 @@ namespace tmanager {
             // cosmicTime = fixTimeFromTotalInMillis(cosmicTime);
             
             return cosmicTime;
-        }
+        };
     
         /** Returns the date as {yyyy-M-dTH:m:s.f[z]} */
-        function nowTimeString(utc: boolean) : string {
+        export var nowTimeString: NowTimeString = function(utc: boolean) : string {
             var d = new Date();
             var dateStr: string;
     
@@ -184,31 +184,31 @@ namespace tmanager {
             }
     
             return dateStr;
-        }
+        };
     
         /** Returns the elapsed millis to time as years, months, days.. Optionally, dds it to the startTime */
-        function millisToTimespan(elapsedMillis: number, startTime?:CosmicTime) : CosmicTime {
+        export var millisToTimespan: MillisToTimespan = function(elapsedMillis: number, startTime?:CosmicTime) : CosmicTime {
             var currTime:CosmicTime = <CosmicTime>{ totalInMillis: 0 };
             if (startTime) {
                 currTime.totalInMillis += startTime.totalInMillis;
             }
     
             currTime.totalInMillis += elapsedMillis;
-            currTime = fixTimeFromTotalInMillis(currTime);
+            currTime = fixTimeFromTotalInMillis(currTime, false);
     
             return currTime;
-        }
+        };
     
         // ---------------------------------------------------------------------------
         var jsIntervalIdx: number;
         var runners: Runner[] = [];
     
-        export function addRunner(runner: Runner) {
+        export var addRunner: AddRunner = function(runner: Runner) {
             runners[runners.length] = runner;
-        }
+        };
     
         /** Calls init on all runners and then starts the timer updating every 100 millis */
-        export function runTime() {
+        export var runTime: RunTime = function() {
             for (var i = 0; i < runners.length; i++) {
                 runners[i].init();
             }
@@ -216,28 +216,28 @@ namespace tmanager {
             // call updateTime every 100 ms
             jsIntervalIdx = setInterval(
                 updateTimeIfNoFlag,
-                timerUpdateInterval);
-        }
+                config.timerUpdateInterval);
+        };
     
-        function updateTimeIfNoFlag() {
+        export var updateTimeIfNoFlag: UpdateTimeIfNoFlag = function() {
             // Wait for the external flag for pausing the clock to be cleared
-            if (!timePaused) {
+            if (!config.timePaused) {
                 // move timer considering:
                 // 1. lag in update interval (timerUpdateInterval instead of one millsecond)
                 // 2. duration to run (don't slow down the clock, fast-up the cosmic time move)
                 // 3. how fast you want to move the clock so that 24 hours is done in 120 seconds
-                var jumpUnits = timerUpdateInterval * cosmicMillisPerClockMillis * clockTimeCompressionFactor;
+                var jumpUnits = config.timerUpdateInterval * config.cosmicMillisPerClockMillis * config.clockTimeCompressionFactor;
                 var elapsed: CosmicTime = tick(jumpUnits);
     
-                if (currTime.totalInMillis >= toTime.totalInMillis) {
+                if (config.currTime.totalInMillis >= config.toTime.totalInMillis) {
                     clearInterval(jsIntervalIdx);
-                    currTime = toTime;
+                    config.currTime = config.toTime;
                 }
     
                 for (var i = 0; i < runners.length; i++) {
-                    runners[i].update(elapsed, currTime);
+                    runners[i].update(elapsed, config.currTime);
                 }
             }
-        }
+        };
     }
     

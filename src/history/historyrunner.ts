@@ -25,7 +25,7 @@ historyRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): 
             // First, slow down the speed (if requested)            
             if (he.speed === undefined || he.speed === null) {
                 if (this.hist.speed) {
-                    tmanager.clockTimeCompressionFactor = this.hist.speed;
+                    timemanager.config.clockTimeCompressionFactor = this.hist.speed;
                 }
                 else {
                     utils.setSpeed();
@@ -35,7 +35,7 @@ historyRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): 
                 utils.setSpeed();
             }
             else {
-                tmanager.clockTimeCompressionFactor = he.speed;
+                timemanager.config.clockTimeCompressionFactor = he.speed;
             }
 
             // Now, render the history and mark the flag to avoid rendering again
@@ -70,5 +70,5 @@ historyRunner.historyView = function(contentsEl: HTMLElement, historyObj: Histor
         };
     }
 
-    tmanager.addRunner(this);
+    timemanager.addRunner(this);
 }
