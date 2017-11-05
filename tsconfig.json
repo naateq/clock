@@ -6,12 +6,16 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "module": "amd", // 'none', 'commonjs', 'amd', 'system', 'umd', 'es6', or 'es2015'.
-        "target": "es5"
+        "target": "es5",
+        "outDir": "bin",
+        "outFile": "bin/clock.html"
     },
 
     "files": [
-        "src/tools/numbers.ts"
-        //,"src/tools/tools.ts"
+        "src/tools/numbers.ts",
+        "src/tools/calendar.lunar.ts",
+        "src/tools/calendar.ts",
+        "src/clock/analogclock.ts"
     ],
 
     "include": [
