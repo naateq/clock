@@ -4,7 +4,7 @@
 
 //window.onload = function() {
 function onWindowLoad() {
-    utils.setParametersFromUrl([ 'fromYear', 'toYear', 'speed']);
+    browser.setParametersFromUrl([ 'fromYear', 'toYear', 'speed']);
 
     var hist_cosmos: History = histories['cosmos'];
     var hist_hijri: History = histories['hijri'];
@@ -37,18 +37,18 @@ function runHistory(ahist: History) {
 
     var fromYearText: string = ahist.begins;
     if (!fromYearText)
-        fromYearText = utils.getElementValue('fromYear');
+        fromYearText = browser.getElementValue('fromYear');
 
     var toYearText: string = ahist.ends;
     if (!toYearText)
-        toYearText = utils.getElementValue('toYear');
+        toYearText = browser.getElementValue('toYear');
 
     timemanager.init(fromYearText, toYearText);
-    utils.logTimers();
+    debug.logTimers();
 
     var canvas = <HTMLCanvasElement>document.getElementById("canvas");
     canvas.onclick = function() {
-        utils.toggleTimePause();
+        timemanager.toggleTimePause();
     };
 
     clockRunner.clock(canvas, 24);
@@ -56,6 +56,6 @@ function runHistory(ahist: History) {
     var contentsEl: HTMLElement = <HTMLInputElement>document.getElementById('contents');
     historyRunner.historyView(contentsEl, ahist);
 
-    utils.setSpeed();
+    timemanager.setSpeed();
     timemanager.runTime();
 }

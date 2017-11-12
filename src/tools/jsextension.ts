@@ -1,6 +1,24 @@
-/// <reference path="../../typings/clock/clock.d.ts" />
 
-namespace numbers {
+interface String {
+    /** Joins all arguments in a string with the specified delimiter provided as the first argument. */
+    join: (delimiter: string, ...args: object[]) => string;
+}
+String.prototype.join = function(delimiter: string, ...args: object[]) : string {
+
+    if (!arguments || arguments.length < 2) {
+        throw 'Nothing to join. Usage: join(delimiter, argumentsToJoin)';
+    }
+
+    var str = arguments[1];
+
+    for (var i = 2; i < arguments.length; i++) {
+        str += delimiter + arguments[i];
+    }
+
+    return str;
+}
+
+namespace number {
     //
     export var Zero = 0;
     export var Unit = 1;
@@ -57,7 +75,7 @@ namespace numbers {
     export interface ParseNumber {
         (numberStr: string): number;
     }
-    export var parseNumber: ParseNumber = function(str: string): number {
+    export var parse: ParseNumber = function(str: string): number {
 
         if (!str) {
             return Zero;

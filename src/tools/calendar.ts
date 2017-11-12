@@ -1,4 +1,4 @@
-/// <reference path="numbers.ts" />
+/// <reference path="jsextension.ts" />
 /// <reference path="../../typings/clock/calendar.d.ts" />
 
 // ==========================================================================
@@ -18,7 +18,7 @@ namespace calendar {
      * NOTE: The scale for years before 20 kBC or 20 kya is the same, i.e. we don't
      * differentiate between BC or ya
      */
-    export var YearThresholdForPrecision: number = numbers.parseNumber('-20,000');
+    export var YearThresholdForPrecision: number = number.parse('-20,000');
 
     export var yearSuffix: YearSuffix = {
         YearsAgo: 'ya',
@@ -44,15 +44,15 @@ namespace calendar {
         }
         else if (yearStr.indexOf(yearSuffix.YA) > 0) {
             // -ya + 2,000
-            result = date.FullYearToDate - numbers.parseNumber( yearStr.replace(yearSuffix.YA, ''));
+            result = date.FullYearToDate - number.parse( yearStr.replace(yearSuffix.YA, ''));
         }
         else if (yearStr.indexOf(gregorian.yearSuffix.BC) > 0) {
             // -bc + 0
-            result = -numbers.parseNumber( yearStr.replace(gregorian.yearSuffix.BC, ''));
+            result = -number.parse( yearStr.replace(gregorian.yearSuffix.BC, ''));
         }
         else {
             // ad + 0
-            result = +numbers.parseNumber(yearStr.replace(gregorian.yearSuffix.AD, ''));
+            result = +number.parse(yearStr.replace(gregorian.yearSuffix.AD, ''));
         }
 
         return result;
@@ -73,21 +73,21 @@ namespace calendar {
             var factorStr: string = ' BC';
             var factor: number = 1;
 
-            if (year >= numbers.Billion) {
+            if (year >= number.Billion) {
                 factorStr = ' bya';
-                factor = numbers.Billion;
+                factor = number.Billion;
             }
-            else if (year >= numbers.Million) {
+            else if (year >= number.Million) {
                 factorStr = ' mya';
-                factor = numbers.Million;
+                factor = number.Million;
             }
             else if (year >= -YearThresholdForPrecision) {
                 factorStr = ' kya';
-                factor = numbers.Kilo;
+                factor = number.Kilo;
             }
-            else if (year >= numbers.Kilo) {
+            else if (year >= number.Kilo) {
                 factorStr = ' kBC';
-                factor = numbers.Kilo;
+                factor = number.Kilo;
             }
 
             year /= factor;
@@ -236,11 +236,11 @@ namespace calendar {
 
             if (yearStr.indexOf(hijri.yearSuffix.BH) > 0) {
                 // Before Hijri => 621 - bhInSolar
-                return -numbers.parseNumber(yearStr.replace(hijri.yearSuffix.BH, ''));
+                return -number.parse(yearStr.replace(hijri.yearSuffix.BH, ''));
             }
             else {
                 // After Hijri => 621 + ahInSolar
-                return numbers.parseNumber(yearStr.replace(hijri.yearSuffix.AH, '').replace(hijri.yearSuffix.H, ''));
+                return number.parse(yearStr.replace(hijri.yearSuffix.AH, '').replace(hijri.yearSuffix.H, ''));
             }
         },
 
@@ -274,17 +274,17 @@ namespace calendar {
                 var factorStr: string = '';
                 var factor: number = 1;
 
-                if (hijriYear >= numbers.Billion) {
-                    return (hijriYear / numbers.Billion).toFixed(2) + ' bya';
+                if (hijriYear >= number.Billion) {
+                    return (hijriYear / number.Billion).toFixed(2) + ' bya';
                 }
-                else if (hijriYear >= numbers.Million) {
-                    return (hijriYear / numbers.Million).toFixed(2) + ' mya';
+                else if (hijriYear >= number.Million) {
+                    return (hijriYear / number.Million).toFixed(2) + ' mya';
                 }
                 else if (hijriYear >= -YearThresholdForPrecision) {
-                    return (hijriYear / numbers.Kilo).toFixed(2) + ' kya';
+                    return (hijriYear / number.Kilo).toFixed(2) + ' kya';
                 }
-                else if (hijriYear >= numbers.Kilo) {
-                    return (hijriYear / numbers.Kilo).toFixed(2) + ' kBH';
+                else if (hijriYear >= number.Kilo) {
+                    return (hijriYear / number.Kilo).toFixed(2) + ' kBH';
                 }
                 else {
                     return hijriYear.toFixed(2) + ' BH'
