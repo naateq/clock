@@ -1,74 +1,11 @@
-/// <reference path="calendar.lunar.ts" />
+/// <reference path="numbers.ts" />
+/// <reference path="../../typings/clock/calendar.d.ts" />
 
+// ==========================================================================
+// Calendar implementation
+// ==========================================================================
 namespace calendar {
-    namespace month {
-        export var Gregorian: string[] = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec'
-        ];
 
-        export var GregorianUpper: string[] = [
-            'JAN',
-            'FEB',
-            'MAR',
-            'APR',
-            'MAY',
-            'JUN',
-            'JUL',
-            'AUG',
-            'SEP',
-            'OCT',
-            'NOV',
-            'DEC'
-        ];
-
-        export var hijri: string[] = [
-            'Muh',
-            'Saf',
-            'Jam-1',
-            'Jam-2',
-            'Rab-1',
-            'Rab-2',
-            'Raj',
-            'Shab',
-            'Rama',
-            'Shaw',
-            'Qad',
-            'Haj'
-        ];
-    }
-}
-
-namespace calendar {
-    /** --------------------------------------------------------------- */
-    export interface Dates {
-        Now: Date;
-        NewYear: Date;
-        NextYear: Date;
-        Today: Date;
-        MillisInCurrYear: number;
-        CurrYearFraction: number;
-        FullYearToDate: number;
-    }
-    export var date = <Dates> {};
-    date.Now = new Date();
-    date.NewYear = new Date(date.Now.getFullYear(), 0, 1);
-    date.NextYear = new Date(1+date.Now.getFullYear(), 0, 1);
-    date.Today = new Date(date.Now.getFullYear(), date.Now.getMonth(), date.Now.getDate());
-    date.MillisInCurrYear = date.NextYear.getTime() - date.NewYear.getTime();
-    date.CurrYearFraction = (date.Today.getTime() - date.NewYear.getTime()) / date.MillisInCurrYear;
-    date.FullYearToDate =  date.NewYear.getFullYear() + date.CurrYearFraction;
-    
     /**
      * ----------------------------------------------------------------
      * AD/BC: conventional meaning
@@ -83,44 +20,25 @@ namespace calendar {
      */
     export var YearThresholdForPrecision: number = numbers.parseNumber('-20,000');
 
-    /** --------------------------------------------------------------- */
-    export interface YearSuffix extends LunarYearSuffix{
-        BC: string,
-        AD: string,
-    
-        YearsAgo: string,
-        YA: string
-    }
-    export var yearSuffix = <YearSuffix>{
-        BC: 'bc',
-        AD: 'ad',
-
+    export var yearSuffix: YearSuffix = {
         YearsAgo: 'ya',
         YA: 'ya'
     };
-    yearSuffix.BH = lunarYearSuffix.BH;
-    yearSuffix.AH = lunarYearSuffix.AH;
-    yearSuffix.H = lunarYearSuffix.H;
 
-    /**
-     * ----------------------------------------------------------------
-     * Parses conventional year phrases into a number starting at 0 AD, going negative
-     * towards older time, and positive towards the current time
-     * Examples formats: '610AD', '570 BC', '13,000 ya', '40 kya'
-     * hijri years are also converted, such as 1437H or 250 AH. Spaces don't matter
-     * For hijri conversion, years are rounded and may have a year or so off
-     *
-     * @return returns an absolute number that starts from 0AD and scales positive after
-     * AD and scales negative before AD
-     */
-    export interface ParseYear {
-        (yearStr: string): number;
-    }
+    export var date = <Dates> {};
+    date.Now = new Date();
+    date.NewYear = new Date(date.Now.getFullYear(), 0, 1);
+    date.NextYear = new Date(1+date.Now.getFullYear(), 0, 1);
+    date.Today = new Date(date.Now.getFullYear(), date.Now.getMonth(), date.Now.getDate());
+    date.MillisInCurrYear = date.NextYear.getTime() - date.NewYear.getTime();
+    date.CurrYearFraction = (date.Today.getTime() - date.NewYear.getTime()) / date.MillisInCurrYear;
+    date.FullYearToDate =  date.NewYear.getFullYear() + date.CurrYearFraction;
+    
     export var parseYear: ParseYear = function(yearStr: string): number {
         yearStr = yearStr.toLowerCase();
         var result: number = 0;
 
-        if (yearStr.indexOf(yearSuffix.H) > 0) {
+        if (yearStr.indexOf(hijri.yearSuffix.H) > 0) {
             // First convert to hijri number and then to Gregorian
             result =  hijri.parseYearToGregorian(yearStr);
         }
@@ -128,27 +46,18 @@ namespace calendar {
             // -ya + 2,000
             result = date.FullYearToDate - numbers.parseNumber( yearStr.replace(yearSuffix.YA, ''));
         }
-        else if (yearStr.indexOf(yearSuffix.BC) > 0) {
+        else if (yearStr.indexOf(gregorian.yearSuffix.BC) > 0) {
             // -bc + 0
-            result = -numbers.parseNumber( yearStr.replace(yearSuffix.BC, ''));
+            result = -numbers.parseNumber( yearStr.replace(gregorian.yearSuffix.BC, ''));
         }
         else {
             // ad + 0
-            result = +numbers.parseNumber(yearStr.replace(yearSuffix.AD, ''));
+            result = +numbers.parseNumber(yearStr.replace(gregorian.yearSuffix.AD, ''));
         }
 
         return result;
     };
 
-    /**
-     * ----------------------------------------------------------------
-     * Takes in the year returned by parseYearStr and returns the conventional year phrase
-     * @param year the absolute number that scales positive starting 0AD and scales negative before AD
-     * @return the year as AD, BC, bya (billion years ago), mya, kya (thousand years ago)
-     */
-    export interface FromParsedYear {
-        (year: number) : string;
-    }
     export var fromParsedYear: FromParsedYear = function(year: number): string {
 
         if (year == null) {
@@ -185,4 +94,203 @@ namespace calendar {
             return year.toFixed(2) + factorStr;
         }
     };
+
+    export var lunar = <LunarConvertor> {
+        // Factor of 1.03068982 or 0.970224 (A diff of 29,776 in 1,000,000 year)
+        SolarFactor: 1000000,
+        LunarFactor:  970224,
+
+        fromSolar: function(solarYear: number) : number {
+            // Going from solar to lunar increases the year by a factor of 1.03068982
+            return ((solarYear * this.SolarFactor) / this.LunarFactor);
+        },
+
+        toSolar: function(lunarYear: number) : number {
+            // Going from lunar to solar decreases the year by a factor of 0.970224
+            return ((lunarYear * this.LunarFactor) / this.SolarFactor);
+        }
+    };
 }
+
+// ==========================================================================
+// GregorianCalendar implementation
+// ==========================================================================
+namespace calendar {
+        
+    export var gregorian: GregorianCalendar = {
+
+        monthName: <MonthName>{
+            January: 'Jan',
+            February: 'Feb',
+            March: 'Mar',
+            April: 'Apr',
+            May: 'May',
+            June: 'Jun',
+            July: 'Jul',
+            August: 'Aug',
+            September: 'Sep',
+            October: 'Oct',
+            November: 'Nov',
+            December: 'Dec'
+        },
+
+        monthNameUpper: <MonthName>{
+            January: 'JAN',
+            February: 'FEB',
+            March: 'MAR',
+            April: 'APR',
+            May: 'MAY',
+            June: 'JUN',
+            July: 'JUL',
+            August: 'AUG',
+            September: 'SEP',
+            October: 'OCT',
+            November: 'NOV',
+            December: 'DEC'
+        },
+
+        month: [
+            gregorian.monthName.January,
+            gregorian.monthName.February,
+            gregorian.monthName.March,
+            gregorian.monthName.April,
+            gregorian.monthName.May,
+            gregorian.monthName.June,
+            gregorian.monthName.July,
+            gregorian.monthName.August,
+            gregorian.monthName.September,
+            gregorian.monthName.October,
+            gregorian.monthName.November,
+            gregorian.monthName.December,
+        ],
+
+        yearSuffix: {
+            BC: 'bc',
+            AD: 'ad',
+
+            YearsAgo: calendar.yearSuffix.YearsAgo,
+            YA: calendar.yearSuffix.YA
+        }
+    };
+}
+
+// ==========================================================================
+// HijriCalendar implementation
+// ==========================================================================
+namespace calendar {
+    export var hijri: HijriCalendar = {
+
+        monthName: <HijriMonthName> {
+            Muharram: 'Muh',
+            Safar: 'Saf',
+            RabialAwwal: 'Rba',
+            RabialSaani: 'Rbs',
+            JamadaalAwwal: 'Jma',
+            JamadaalSaani: 'Jms',
+            Rajab: 'Raj',
+            Shaban: 'Shb',
+            Ramadan: 'Ram',
+            Shawwal: 'Shw',
+            DhualQadah: 'Dqa',
+            DhualHijjah: 'Dhj'
+        },
+
+        month: [
+            hijri.monthName.Muharram,
+            hijri.monthName.Safar,
+            hijri.monthName.RabialAwwal,
+            hijri.monthName.RabialSaani,
+            hijri.monthName.JamadaalAwwal,
+            hijri.monthName.JamadaalSaani,
+            hijri.monthName.Rajab,
+            hijri.monthName.Shaban,
+            hijri.monthName.Ramadan,
+            hijri.monthName.Shawwal,
+            hijri.monthName.DhualQadah,
+            hijri.monthName.DhualHijjah
+        ],
+
+        yearSuffix: {
+            BH: 'bh',
+            AH: 'ah',
+            H: 'h',
+
+            YearsAgo: calendar.yearSuffix.YearsAgo,
+            YA: calendar.yearSuffix.YA
+        },
+
+        GregorianOffset: 621.5774,
+        
+        /** -------------------------------------------------------------- */
+        toGregorian: function(hijriYear: number) : number {
+            return lunar.toSolar(hijriYear) + this.GregorianOffset;
+        },
+
+        /** -------------------------------------------------------------- */
+        fromGregorian: function(gregorianYear: number) : number {
+            return lunar.fromSolar(gregorianYear - this.GregorianOffset);
+        },
+
+        /** -------------------------------------------------------------- */
+        parseYear: function(yearStr: string) : number {
+
+            if (yearStr.indexOf(hijri.yearSuffix.BH) > 0) {
+                // Before Hijri => 621 - bhInSolar
+                return -numbers.parseNumber(yearStr.replace(hijri.yearSuffix.BH, ''));
+            }
+            else {
+                // After Hijri => 621 + ahInSolar
+                return numbers.parseNumber(yearStr.replace(hijri.yearSuffix.AH, '').replace(hijri.yearSuffix.H, ''));
+            }
+        },
+
+        /** -------------------------------------------------------------- */
+        parseYearToGregorian: function(yearStr: string) : number {
+            return this.toGregorian(this.parseYear(yearStr));
+        },
+
+        /**
+         * ----------------------------------------------------------------
+         * Takes in the year returned by parseYearStr and returns the conventional year phrase in hijri.
+         * No distinction is made for time before 20kBC
+         * @param year the absolute number that scales positive starting 0AD and scales negative before AD
+         * @return the year as H or BH, bya (billion years ago), mya, kya (thousand years ago)
+         */
+        fromParsedYearGregorian: function(year: number): string {
+    
+            if (year == null) {
+                year = 0;
+            }
+    
+            var hijriYear = hijri.fromGregorian(year);
+
+            if (hijriYear >= 0) {
+                return hijriYear + ' H';
+            }
+            // BH years
+            else {
+                hijriYear = -hijriYear;
+
+                var factorStr: string = '';
+                var factor: number = 1;
+
+                if (hijriYear >= numbers.Billion) {
+                    return (hijriYear / numbers.Billion).toFixed(2) + ' bya';
+                }
+                else if (hijriYear >= numbers.Million) {
+                    return (hijriYear / numbers.Million).toFixed(2) + ' mya';
+                }
+                else if (hijriYear >= -YearThresholdForPrecision) {
+                    return (hijriYear / numbers.Kilo).toFixed(2) + ' kya';
+                }
+                else if (hijriYear >= numbers.Kilo) {
+                    return (hijriYear / numbers.Kilo).toFixed(2) + ' kBH';
+                }
+                else {
+                    return hijriYear.toFixed(2) + ' BH'
+                }
+            }
+        }
+    };
+}
+    

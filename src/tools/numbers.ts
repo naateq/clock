@@ -55,7 +55,7 @@ namespace numbers {
      * 999, 23,000,000, 15c, 2k, 5m, 13.6b
      */
     export interface ParseNumber {
-        (intStr: string): number;
+        (numberStr: string): number;
     }
     export var parseNumber: ParseNumber = function(str: string): number {
 
@@ -63,7 +63,7 @@ namespace numbers {
             return Zero;
         }
 
-        var factor = Unit;
+        var factor = 1;
 
         // remove 10^3 separator
         str = str.replace(',', '').toLowerCase();
@@ -89,5 +89,5 @@ namespace numbers {
         var result = factor * parseFloat(str);
         
         return result;
-    }
+    };
 }
