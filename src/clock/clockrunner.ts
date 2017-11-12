@@ -5,12 +5,12 @@ var clockRunner = <AnalogClockRunner>{};
 
 clockRunner.init = function(): void {
     var cosmicDuration: number = timemanager.config.toTime.totalInMillis - timemanager.config.fromTime.totalInMillis;
-    var thisClockDuration: number = this.totalHours * numbers.MillisInHour;
+    var thisClockDuration: number = this.totalHours * number.MillisInHour;
     this.cosmicMillisPerClockMillis =  Math.ceil(cosmicDuration / thisClockDuration) || 1;
 
     // timemanager won't slow down the clock, it would fast-up the cosmic time (tick) move
     timemanager.config.cosmicMillisPerClockMillis = this.cosmicMillisPerClockMillis;
-    this.cosmicMonthsPerClockUnit = timemanager.config.cosmicMillisPerClockMillis / numbers.MillisInMonth;
+    this.cosmicMonthsPerClockUnit = timemanager.config.cosmicMillisPerClockMillis / number.MillisInMonth;
 };
 
 clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): void {

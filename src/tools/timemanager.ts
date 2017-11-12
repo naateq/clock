@@ -1,34 +1,46 @@
-/// <reference path="../../typings/clock/clock.d.ts" />
 /// <reference path="calendar.ts" />
+/// <reference path="browser.ts" />
+/// <reference path="../../Script/typings/clock/clock.d.ts" />
 
 namespace timemanager {
 
     export var config = <Config> {
         // unit of time is millis in this namespace
+
+        // Cosmic start time - static
         fromTime: <CosmicTime>null,
+
+        // Cosmic end time - static
         toTime: <CosmicTime>null,
+
+        // Cosmic current time as the clock is running - dynamic state
         currTime: <CosmicTime>null,
+
+        // Cosmic elapsed time so far as the clock is running - dynamic state
         elapsedTime: <CosmicTime>null,
+
+        // A flag to indicate if the clock is paused (not running) at the moment
         timePaused: <boolean>false,
         
         /** 
-         * This is the lag (in millis) between two updates
+         * This is the lag (in millis) between updates. The clock is updated after this (system time) interval has elapsed
          */
-        timerUpdateInterval: <number>100,
+        timerUpdateInterval: <number> 100,
     
         /** 
+         * Indicates how many cosmic time should elapse for each millisecond of the clock cycle - 12h or 24h.
          * This factor keeps the clock running at the consistent pace irrespective of cosmic duration.
          * One of the runners sets this factor based on the cosmic duration and the number of hours 
          * (12 or 24) in the clock to run. i.e. (cosmic_duration / clock_duration)
          */
-        cosmicMillisPerClockMillis: <number>1,
+        cosmicMillisPerClockMillis: <number> 1,
     
         /**
-         * Amount of clock time to compress per unit of clock time, to make the clock run faster.
+         * Runs the clock faster based on the time compression factor.
          * Setting it to 3600 means, the clock will traverse one hour during a one second period
          * and, as such, complete 24 hours in 24 seconds.
          */
-        clockTimeCompressionFactor: <number>1
+        clockTimeCompressionFactor: <number> 1
     };
 
     /** Initializes fromTime, toTime, currTime and elapsedTime */

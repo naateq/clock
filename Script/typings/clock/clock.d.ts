@@ -1,3 +1,27 @@
+interface CosmicTime {
+    timestr: string;
+
+    year: number;
+    month: number;
+    day: number;
+
+    hour: number;
+    minute: number;
+    second: number;
+
+    yearInMillis: number;
+    monthInMillis: number;
+    dayInMillis: number;
+
+    hourInMillis: number;
+    minuteInMillis: number;
+    secondInMillis: number;
+    millis: number;
+
+    totalInMillis: number;
+    isHijri: boolean;
+}
+
 declare namespace clock {
 
     // Class constructor method for the AnalogClock
@@ -25,30 +49,6 @@ declare namespace clock {
     }
 }
 
-interface CosmicTime {
-    timestr: string;
-
-    year: number;
-    month: number;
-    day: number;
-
-    hour: number;
-    minute: number;
-    second: number;
-
-    yearInMillis: number;
-    monthInMillis: number;
-    dayInMillis: number;
-
-    hourInMillis: number;
-    minuteInMillis: number;
-    secondInMillis: number;
-    millis: number;
-
-    totalInMillis: number;
-    isHijri: boolean;
-}
-
 interface Runner {
     init(): void;
     update(elapsedTime: CosmicTime, currTime: CosmicTime): void;
@@ -68,7 +68,7 @@ declare var clockRunner: AnalogClockRunner;
 
 declare namespace timemanager {
 
-    interface Config {
+    export interface Config {
         fromTime: CosmicTime;
 
         toTime: CosmicTime;
@@ -97,44 +97,44 @@ declare namespace timemanager {
     }
 
     /** Initializes fromTime, toTime, currTime and elapsedTime */
-    interface Init {
+    export interface Init {
         (fromTimeStr: string, toTimeStr: string): void;
     }
     
     /** Moves the time by 1/unitsToJump millis and returns the elapsed time */
-    interface Tick {
+    export interface Tick {
         (unitsToJump?: number) : CosmicTime;
     }
 
-    interface FixTimeFromTotalInMillis {
+    export interface FixTimeFromTotalInMillis {
         (currTime: CosmicTime, preventNegative?: boolean) : CosmicTime;
     }
 
     /** Converts the time string into individual components - year, month, day, hour, minute, second, millis and totalInMillis. */
-    interface ParseTimeString {
+    export interface ParseTimeString {
         (timeStr: string, isEndTime: boolean) : CosmicTime;
     }
 
     /** Returns the date as {yyyy-M-dTH:m:s.f[z]} */
-    interface NowTimeString {
+    export interface NowTimeString {
         (utc: boolean) : string;
     }
 
     /** Returns the elapsed millis to time as years, months, days.. Optionally, dds it to the startTime */
-    interface MillisToTimespan {
+    export interface MillisToTimespan {
         (elapsedMillis: number, startTime?:CosmicTime) : CosmicTime;
     }
 
-    interface AddRunner {
+    export interface AddRunner {
         (runner: Runner): void;
     }
 
     /** Calls init on all runners and then starts the timer updating every 100 millis */
-    interface RunTime {
+    export interface RunTime {
         (): void;
     }
 
-    interface UpdateTimeIfNoFlag {
+    export interface UpdateTimeIfNoFlag {
         (): void;
     }
 }

@@ -1,22 +1,4 @@
-
-interface String {
-    /** Joins all arguments in a string with the specified delimiter provided as the first argument. */
-    join: (delimiter: string, ...args: object[]) => string;
-}
-String.prototype.join = function(delimiter: string, ...args: object[]) : string {
-
-    if (!arguments || arguments.length < 2) {
-        throw 'Nothing to join. Usage: join(delimiter, argumentsToJoin)';
-    }
-
-    var str = arguments[1];
-
-    for (var i = 2; i < arguments.length; i++) {
-        str += delimiter + arguments[i];
-    }
-
-    return str;
-}
+/// <reference path="../../Script/typings/javascript/jsextension.d.ts" />
 
 namespace number {
     //
@@ -66,46 +48,70 @@ namespace number {
     var DusArub = Dus * Arub;   // 10,00,00,00,000 = 10,000,000,000 == 10 Billion
     var Kharub = Sou * Arub;    // 1,00,00,00,00,000 = 100,000,000,000 == 100 Billion
     var DusKharub = Dus * Kharub; // Trillion
+}
 
-    /**
-     * ----------------------------------------------------------------
-     * Parses a number string given in one of the formats:
-     * 999, 23,000,000, 15c, 2k, 5m, 13.6b
-     */
-    export interface ParseNumber {
-        (numberStr: string): number;
+String.prototype.join = function(delimiter: string, ...args: object[]) : string {
+
+    if (!arguments || arguments.length < 2) {
+        throw 'Nothing to join. Usage: join(delimiter, argumentsToJoin)';
     }
+
+    var str = arguments[1];
+
+    for (var i = 2; i < arguments.length; i++) {
+        str += delimiter + arguments[i];
+    }
+
+    return str;
+};
+
+String.prototype.parseNumber = function(): number {
+
+    if (this.length) {
+        return number.Zero;
+    }
+
+    var factor = 1;
+
+    // remove 10^3 separator
+    var str = this.replace(',', '').toLowerCase();
+    let lastDigitIndex = str.length - 1;
+
+    if (str[lastDigitIndex] == 'b') {
+        str = str.replace('b', '');
+        factor = number.Billion;
+    }
+    else if (str[lastDigitIndex] == 'g') {
+        // Giga
+        str = str.replace('g', '');
+        factor = number.Billion;
+    }
+    else if (str[lastDigitIndex] == 'm') {
+        str = str.replace('m', '');
+        factor = number.Million;
+    }
+    else if (str[lastDigitIndex] == 'k') {
+        str = str.replace('k', '');
+        factor = number.Kilo;
+    }
+    else if (str[lastDigitIndex] == 'c') {
+        str = str.replace('c', '');
+        factor =number.Cent;
+    }
+
+    var result = factor * parseFloat(str);
+    
+    return result;
+};
+
+namespace number {
     export var parse: ParseNumber = function(str: string): number {
 
         if (!str) {
             return Zero;
         }
 
-        var factor = 1;
-
-        // remove 10^3 separator
-        str = str.replace(',', '').toLowerCase();
-        let lastDigitIndex = str.length - 1;
-
-        if (str[lastDigitIndex] == 'b') {
-            str = str.replace('b', '');
-            factor = Billion;
-        }
-        else if (str[lastDigitIndex] == 'm') {
-            str = str.replace('m', '');
-            factor = Million;
-        }
-        else if (str[lastDigitIndex] == 'k') {
-            str = str.replace('k', '');
-            factor = Kilo;
-        }
-        else if (str[lastDigitIndex] == 'c') {
-            str = str.replace('c', '');
-            factor = Cent;
-        }
-
-        var result = factor * parseFloat(str);
-        
+        var result = str.parseNumber();
         return result;
     };
 }

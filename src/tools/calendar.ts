@@ -1,5 +1,5 @@
 /// <reference path="jsextension.ts" />
-/// <reference path="../../typings/clock/calendar.d.ts" />
+/// <reference path="../../Script/typings/clock/calendar.d.ts" />
 
 // ==========================================================================
 // Calendar implementation

@@ -1,4 +1,4 @@
-/// <reference path="../../typings/clock/history.d.ts" />
+/// <reference path="../../Script/typings/clock/history.d.ts" />
 /// <reference path="../tools/calendar.ts" />
 /// <reference path="../tools/tools.ts" />
 /// <reference path="analoghistory.ts" />
@@ -28,11 +28,11 @@ historyRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): 
                     timemanager.config.clockTimeCompressionFactor = this.hist.speed;
                 }
                 else {
-                    utils.setSpeed();
+                    timemanager.setSpeed();
                 }
             }
             else if (he.speed < 0) {
-                utils.setSpeed();
+                timemanager.setSpeed();
             }
             else {
                 timemanager.config.clockTimeCompressionFactor = he.speed;

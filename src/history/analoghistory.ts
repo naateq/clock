@@ -1,4 +1,4 @@
-/// <reference path="../../typings/clock/history.d.ts" />
+/// <reference path="../../Script/typings/clock/history.d.ts" />
 
 namespace renderer {
 

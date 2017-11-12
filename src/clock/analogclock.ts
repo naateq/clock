@@ -1,4 +1,4 @@
-/// <reference path="../../typings/clock/clock.d.ts" />
+/// <reference path="../../Script/typings/clock/clock.d.ts" />
 
 namespace clock {
 
