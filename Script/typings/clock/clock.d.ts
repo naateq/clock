@@ -1,26 +1,4 @@
-interface CosmicTime {
-    timestr: string;
-
-    year: number;
-    month: number;
-    day: number;
-
-    hour: number;
-    minute: number;
-    second: number;
-
-    yearInMillis: number;
-    monthInMillis: number;
-    dayInMillis: number;
-
-    hourInMillis: number;
-    minuteInMillis: number;
-    secondInMillis: number;
-    millis: number;
-
-    totalInMillis: number;
-    isHijri: boolean;
-}
+/// <reference path="./cosmictime.d.ts" />
 
 declare namespace clock {
 
@@ -57,9 +35,9 @@ interface Runner {
 interface AnalogClockRunner extends Runner {
     clockView: clock.AnalogClock;
     totalHours: number;
+    cosmicMonthsPerClockUnit: number;
     cosmicMillisPerClockMillis: number;
     currentClockTime: CosmicTime;
-    cosmicMonthsPerClockUnit: boolean;
 
     clock: (canvas: HTMLCanvasElement, clockHours: number) => void;
 }

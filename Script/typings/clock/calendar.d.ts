@@ -38,6 +38,8 @@ declare namespace calendar {
         MillisInCurrYear: number;
         CurrYearFraction: number;
         FullYearToDate: number;
+
+        nowAsString: (utc?: boolean) => string;
     }
 
     export interface YearSuffix {
@@ -85,6 +87,8 @@ declare namespace calendar {
 
         /** Ordered list of Gregorian calendar months - zero based index map from month number to the name */
         month: string[];
+
+        daysInMonth: number[];
 
         /** Year suffix used to denatore before or after Christ death */
         yearSuffix: GregorianYearSuffix;

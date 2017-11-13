@@ -6,6 +6,41 @@
 // ==========================================================================
 namespace calendar {
 
+    export var date = <Dates> {};
+    date.Now = new Date();
+    date.NewYear = new Date(date.Now.getFullYear(), 0, 1);
+    date.NextYear = new Date(1+date.Now.getFullYear(), 0, 1);
+    date.Today = new Date(date.Now.getFullYear(), date.Now.getMonth(), date.Now.getDate());
+    date.MillisInCurrYear = date.NextYear.getTime() - date.NewYear.getTime();
+    date.CurrYearFraction = (date.Today.getTime() - date.NewYear.getTime()) / date.MillisInCurrYear;
+    date.FullYearToDate =  date.NewYear.getFullYear() + date.CurrYearFraction;
+    /** Returns the date as {yyyy-M-dTH:m:s.f[z]} */
+    date.nowAsString = function (utc?: boolean): string {
+        var d = date.Now;
+        var dateStr: string;
+
+        if (utc) {
+            dateStr = d.toISOString(); // "2017-03-18T04:20:42.842Z" (UTC)
+        }
+        else { 
+            // format: 2017-1-5T3:20:4.234
+            dateStr = d.getFullYear() +
+                '-' + (d.getMonth() + 1) +
+                '-' + d.getDate() +
+                'T' + d.getHours() +
+                ':' + d.getMinutes() +
+                ':' + d.getSeconds() +
+                '.' + d.getMilliseconds(); 
+            
+            /* For now, don't set the timezone offset * /
+            var offsetMinutes = d.getTimezoneOffset();
+            str += (offsetMinutes < 0 ? '-' : '+') + offsetMinutes;
+            /* */
+        }
+
+        return dateStr;
+    };
+
     /**
      * ----------------------------------------------------------------
      * AD/BC: conventional meaning
@@ -25,15 +60,6 @@ namespace calendar {
         YA: 'ya'
     };
 
-    export var date = <Dates> {};
-    date.Now = new Date();
-    date.NewYear = new Date(date.Now.getFullYear(), 0, 1);
-    date.NextYear = new Date(1+date.Now.getFullYear(), 0, 1);
-    date.Today = new Date(date.Now.getFullYear(), date.Now.getMonth(), date.Now.getDate());
-    date.MillisInCurrYear = date.NextYear.getTime() - date.NewYear.getTime();
-    date.CurrYearFraction = (date.Today.getTime() - date.NewYear.getTime()) / date.MillisInCurrYear;
-    date.FullYearToDate =  date.NewYear.getFullYear() + date.CurrYearFraction;
-    
     export var parseYear: ParseYear = function(yearStr: string): number {
         yearStr = yearStr.toLowerCase();
         var result: number = 0;
@@ -162,6 +188,21 @@ namespace calendar {
             gregorian.monthName.October,
             gregorian.monthName.November,
             gregorian.monthName.December,
+        ],
+
+        daysInMonth: [
+            31,
+            28,
+            31,
+            30,
+            31,
+            30,
+            31,
+            31,
+            30,
+            31,
+            30,
+            31
         ],
 
         yearSuffix: {

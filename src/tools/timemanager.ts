@@ -1,6 +1,6 @@
-/// <reference path="calendar.ts" />
+/// <reference path="./cosmictime.ts" />
 /// <reference path="browser.ts" />
-/// <reference path="../../Script/typings/clock/clock.d.ts" />
+///// <reference path="../../Script/typings/clock/clock.d.ts" />
 
 namespace timemanager {
 
@@ -45,170 +45,32 @@ namespace timemanager {
 
     /** Initializes fromTime, toTime, currTime and elapsedTime */
     export var init: Init = function(fromTimeStr: string, toTimeStr: string): void {
-        config.fromTime = <CosmicTime>parseTimeString(fromTimeStr, false);
-        config.toTime = <CosmicTime>parseTimeString(toTimeStr, true);
-        config.currTime = <CosmicTime>config.fromTime;
-
-        config.elapsedTime = <CosmicTime>{ totalInMillis: 0 };
-        config.elapsedTime = <CosmicTime>fixTimeFromTotalInMillis(config.elapsedTime, false);
+        config.currTime = config.fromTime = createCosmicTime(fromTimeStr, false);
+        config.toTime = createCosmicTime(toTimeStr, true);
+        config.elapsedTime = createZeroCosmicTime();
     };
 
     /** Moves the time by 1/unitsToJump millis and returns the elapsed time */
     export var tick: Tick = function(unitsToJump?: number) : CosmicTime {
-        if (!unitsToJump)
+
+        if (!unitsToJump) {
             unitsToJump = 1;
-        
-            config.elapsedTime.totalInMillis += unitsToJump;
-            config.elapsedTime = fixTimeFromTotalInMillis(config.elapsedTime, false);
+        }
 
-            config.currTime.totalInMillis += unitsToJump;
-            config.currTime = fixTimeFromTotalInMillis(config.currTime, false);
-
+        config.currTime.lazyAddTotalMillis(unitsToJump);
+        config.elapsedTime.lazyAddTotalMillis(unitsToJump);
         return config.elapsedTime;
     };
 
-    export var fixTimeFromTotalInMillis: FixTimeFromTotalInMillis = function(currTime: CosmicTime, preventNegative?: boolean) : CosmicTime {
-        var remainingMillis: number = currTime.totalInMillis;
-        var bceSign: number = +1;
-        if (remainingMillis < 0) {
-            bceSign = -1;
-            remainingMillis = -remainingMillis;
-        }
-
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        currTime.year = Math.floor(remainingMillis / number.MillisInYear);
-        currTime.yearInMillis = currTime.year * number.MillisInYear;
-
-        remainingMillis -= currTime.yearInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        currTime.month = Math.floor(remainingMillis / number.MillisInMonth);
-        currTime.monthInMillis = currTime.month * number.MillisInMonth;
-        // currTime.month += 1; // if not 0-based moth
-
-        remainingMillis -= currTime.monthInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        currTime.day = Math.floor(remainingMillis / number.MillisInDay);
-        currTime.dayInMillis = currTime.day * number.MillisInDay;
-        // currTime.day += 1; // if not 0-based days
-
-        remainingMillis -= currTime.dayInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        currTime.hour = Math.floor(remainingMillis / number.MillisInHour);
-        currTime.hourInMillis = currTime.hour * number.MillisInHour;
-
-        remainingMillis -= currTime.hourInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        currTime.minute = Math.floor(remainingMillis / number.MillisInMinute);
-        currTime.minuteInMillis = currTime.minute * number.MillisInMinute;
-
-        remainingMillis -= currTime.minuteInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;   //console.log('remaing millis: ' + remainingMillis);
-        currTime.second = Math.floor(remainingMillis / number.MillisInSecond);
-        currTime.secondInMillis = currTime.second * number.MillisInSecond;
-
-        remainingMillis -= currTime.secondInMillis;
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
-        remainingMillis = remainingMillis > 999 ? 999 : remainingMillis;
-        currTime.millis = remainingMillis;
-
-        currTime.year *= bceSign;
-
-        return currTime;
-    };
-
-    /** Converts the time string into individual components - year, month, day, hour, minute, second, millis and totalInMillis. */
-    export var parseTimeString: ParseTimeString = function(timeStr: string, isEndTime: boolean) : CosmicTime {
-        var cosmicTime = <CosmicTime>{};
-        cosmicTime.timestr = timeStr || nowTimeString(false);
-
-        if (timeStr.indexOf('h') >= 0) {
-            cosmicTime.isHijri = true;
-        }
-
-        var timeParts: string[] = timeStr.split('-', 3);
-        cosmicTime.year = calendar.parseYear(timeParts[0]) || 2017;
-
-        if (timeParts.length > 1) {
-            cosmicTime.month = number.parse(timeParts[1]);
-
-            if (timeParts.length > 2) {
-                cosmicTime.day = number.parse(timeParts[2]);
-            }
-        }
-        
-        if (!cosmicTime.month) {
-            cosmicTime.month = isEndTime ? 12 : 1;
-        }
-        cosmicTime.month -= 1;
-
-        if (!cosmicTime.day) {
-            cosmicTime.day = isEndTime ? 31 : 1;
-        }
-        cosmicTime.day -= 1;
-
-        cosmicTime.hour = isEndTime ? 23 : 0;
-        cosmicTime.minute = isEndTime ? 59 : 0;
-        cosmicTime.second = isEndTime ? 59 : 0;
-
-        cosmicTime.millis = isEndTime ? 999 : 0;
-
-        cosmicTime.yearInMillis = cosmicTime.year * number.MillisInYear;
-        cosmicTime.monthInMillis = cosmicTime.month * number.MillisInMonth;
-        cosmicTime.dayInMillis = cosmicTime.day * number.MillisInDay;
-        cosmicTime.hourInMillis = cosmicTime.hour * number.MillisInHour;
-        cosmicTime.minuteInMillis = cosmicTime.minute * number.MillisInMinute;
-        cosmicTime.secondInMillis = cosmicTime.second * number.MillisInSecond;
-
-        cosmicTime.totalInMillis = cosmicTime.yearInMillis +
-            cosmicTime.monthInMillis +
-            cosmicTime.dayInMillis +
-            cosmicTime.hourInMillis +
-            cosmicTime.minuteInMillis +
-            cosmicTime.secondInMillis +
-            cosmicTime.millis;
-
-        // cosmicTime = fixTimeFromTotalInMillis(cosmicTime);
-        
-        return cosmicTime;
-    };
-
-    /** Returns the date as {yyyy-M-dTH:m:s.f[z]} */
-    export var nowTimeString: NowTimeString = function(utc: boolean) : string {
-        var d = new Date();
-        var dateStr: string;
-
-        if (utc) {
-            dateStr = d.toISOString(); // "2017-03-18T04:20:42.842Z" (UTC)
-        }
-        else { 
-            // format: 2017-1-5T3:20:4.234
-            dateStr = d.getFullYear() +
-                '-' + (d.getMonth() + 1) +
-                '-' + d.getDate() +
-                'T' + d.getHours() +
-                ':' + d.getMinutes() +
-                ':' + d.getSeconds() +
-                '.' + d.getMilliseconds(); 
-            
-            /* For now, don't set the timezone offset * /
-            var offsetMinutes = d.getTimezoneOffset();
-            str += (offsetMinutes < 0 ? '-' : '+') + offsetMinutes;
-            /* */
-        }
-
-        return dateStr;
-    };
-
-    /** Returns the elapsed millis to time as years, months, days.. Optionally, dds it to the startTime */
+    /** Returns the elapsed millis to time as years, months, days.. Optionally, adds it to the startTime */
     export var millisToTimespan: MillisToTimespan = function(elapsedMillis: number, startTime?:CosmicTime) : CosmicTime {
-        var currTime:CosmicTime = <CosmicTime>{ totalInMillis: 0 };
+        
         if (startTime) {
-            currTime.totalInMillis += startTime.totalInMillis;
+            elapsedMillis += startTime.totalInMillis();
         }
 
-        currTime.totalInMillis += elapsedMillis;
-        currTime = fixTimeFromTotalInMillis(currTime, false);
-
+        var currTime:CosmicTime = createZeroCosmicTime();
+        currTime.lazyAddTotalMillis(elapsedMillis);
         return currTime;
     };
 
@@ -217,11 +79,12 @@ namespace timemanager {
     var runners: Runner[] = [];
 
     export var addRunner: AddRunner = function(runner: Runner) {
-        runners[runners.length] = runner;
+        runners.push(runner);
     };
 
     /** Calls init on all runners and then starts the timer updating every 100 millis */
     export var runTime: RunTime = function() {
+        
         for (var i = 0; i < runners.length; i++) {
             runners[i].init();
         }
@@ -300,13 +163,13 @@ namespace debug {
     /** Converts a CosmicTime object to a string and optionally logs it to console */
     export function cosmicTimeToString(ts: CosmicTime, log?: boolean): string {
         var str: string = '';
-        str += ts.year !== undefined ? ts.year : 'xx';
-        str += '-' + (ts.month !== undefined ? ts.month : 'xx');
-        str += '-' + (ts.day !== undefined || ts.day == null ? ts.day : 'xx');
+        str += (<any>ts)._year !== undefined ? (<any>ts).year : 'xx';
+        str += '-' + ((<any>ts).month !== undefined ? (<any>ts).month : 'xx');
+        str += '-' + ((<any>ts).day !== undefined || (<any>ts).day == null ? (<any>ts).day : 'xx');
 
-        str += ' ' + (ts.hour !== undefined ? ts.hour : 'xx');
-        str += ':' + (ts.minute !== undefined ? ts.minute : 'xx');
-        str += ':' + (ts.second !== undefined ? ts.second : 'xx');
+        str += ' ' + ((<any>ts).hour !== undefined ? (<any>ts).hour : 'xx');
+        str += ':' + ((<any>ts).minute !== undefined ? (<any>ts).minute : 'xx');
+        str += ':' + ((<any>ts).second !== undefined ? (<any>ts).second : 'xx');
 
         str += ' (' + (ts.isHijri ? 'AH/BH ' : 'AD/BC ') + ts.totalInMillis + ')';
 

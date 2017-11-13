@@ -1,6 +1,5 @@
 /// <reference path="../../Script/typings/clock/history.d.ts" />
-/// <reference path="../tools/calendar.ts" />
-/// <reference path="../tools/tools.ts" />
+/// <reference path="../clock/clockrunner.ts" />
 /// <reference path="analoghistory.ts" />
 
 var historyRunner: HistoryRunner = <HistoryRunner>{};
@@ -18,7 +17,8 @@ historyRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): 
         return;
     
     // Render all history that elapsed between the time update
-    while (this.currEventIdx < this.hist.eventList.length && this.hist.eventList[this.currEventIdx].year <= currTime.year) {
+    var currYear = currTime.yearInMillis() / number.MillisInYear;
+    while (this.currEventIdx < this.hist.eventList.length && this.hist.eventList[this.currEventIdx].year <= currYear) {
         var he: HistoryEvent = this.hist.eventList[this.currEventIdx];
         if (!he.view.rendered && he.render) {
 
