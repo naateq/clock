@@ -12,19 +12,11 @@
     },
 
     "files": [
-        "src/tools/numbers.ts",
-        "src/tools/calendar.lunar.ts",
-        "src/tools/calendar.ts",
-        "src/tools/tools.ts",
-        "src/tools/timemanager.ts",
-        "src/clock/analogclock.ts",
-        "src/clock/clockrunner.ts",
-        "src/history/analoghistory.ts",
-        "src/history/historyrunner.ts",
         "src/main.ts"
     ],
 
     "include": [
+        "Contents/htmls/index.html",
         "Contents/htmls/script_start.html",
         "Contents/htmls/script_end.html",
         "Contents/styles/*.css",

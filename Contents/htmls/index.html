@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Cosmic Clock</title>
+    <link type="text/css" rel="stylesheet" href="version001.css">
+    <script type="text/javascript" src="clock.js"></script>
+    <script type="text/javascript" src="history_cosmos.js"></script>
+    <script type="text/javascript" src="history_hijri.js"></script>
+</head>
+<body onload="onWindowLoad();">
+
+<div class="atable">
+    <div class="arow">
+
+        <div class="acell">
+            <div class="dropdown">
+                <span style="font-size: 20pt; font-weight: 900; color: black">Cosmic Clock</span>
+                <div class="dropdown-content">
+                    <form>
+                        <button style="font-size: 16pt; font-weight: 900; color: black" type="button" id="runClock" onsubmit="runHistory(); return false;"> Run </button>
+                        <div class="menuitem">from:  <input type="text" name="fromYear" id="fromYear" value="2017-03-23" /></div>
+                        <div class="menuitem">to:    <input type="text" name="toYear" id="toYear" value="2017-03-23" /></div>
+                        <div class="menuitem">speed: <input type="text" name="speed" id="speed" value="1" /></div>
+                    </form>
+                </div>
+            </div>
+            <div><canvas id="canvas" width="700" height="700" style="background-color:#ffffff"></canvas></div>
+        </div>
+
+        <div class="acell">
+            <div class="wrapper">
+                <div class="scrollbar" id="style-2">
+                    <div id="contents" class="force-overflow"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="arow">
+
+        <div class="acell">
+            <div><span id="cosmictime"></span></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+</script>
+
+</body>
+</html>

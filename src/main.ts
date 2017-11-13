@@ -1,10 +1,10 @@
-/// <reference path="clock/clockrunner.ts" />
 /// <reference path="history/historyrunner.ts" />
 
 
 //window.onload = function() {
 function onWindowLoad() {
-    browser.setParametersFromUrl([ 'fromYear', 'toYear', 'speed']);
+
+    browser.updatePageUsingQueryParameters([ 'fromYear', 'toYear', 'speed']);
 
     var hist_cosmos: History = histories['cosmos'];
     var hist_hijri: History = histories['hijri'];

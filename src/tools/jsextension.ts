@@ -34,7 +34,9 @@ namespace number {
     export var MillisInKilo = 10 * MillisInCentury;
     export var MillisInMillion = 1000 * MillisInKilo;
     export var MillisInBillion = 1000 * MillisInMillion;
+}
 
+namespace number {
     var Sifr = Zero;
     var Dus = Ten;
     var Sou = Dus * Ten;

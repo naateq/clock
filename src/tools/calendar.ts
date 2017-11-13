@@ -143,68 +143,7 @@ namespace calendar {
 // ==========================================================================
 namespace calendar {
         
-    export var gregorian: GregorianCalendar = {
-
-        monthName: <MonthName>{
-            January: 'Jan',
-            February: 'Feb',
-            March: 'Mar',
-            April: 'Apr',
-            May: 'May',
-            June: 'Jun',
-            July: 'Jul',
-            August: 'Aug',
-            September: 'Sep',
-            October: 'Oct',
-            November: 'Nov',
-            December: 'Dec'
-        },
-
-        monthNameUpper: <MonthName>{
-            January: 'JAN',
-            February: 'FEB',
-            March: 'MAR',
-            April: 'APR',
-            May: 'MAY',
-            June: 'JUN',
-            July: 'JUL',
-            August: 'AUG',
-            September: 'SEP',
-            October: 'OCT',
-            November: 'NOV',
-            December: 'DEC'
-        },
-
-        month: [
-            gregorian.monthName.January,
-            gregorian.monthName.February,
-            gregorian.monthName.March,
-            gregorian.monthName.April,
-            gregorian.monthName.May,
-            gregorian.monthName.June,
-            gregorian.monthName.July,
-            gregorian.monthName.August,
-            gregorian.monthName.September,
-            gregorian.monthName.October,
-            gregorian.monthName.November,
-            gregorian.monthName.December,
-        ],
-
-        daysInMonth: [
-            31,
-            28,
-            31,
-            30,
-            31,
-            30,
-            31,
-            31,
-            30,
-            31,
-            30,
-            31
-        ],
-
+    export var gregorian: GregorianCalendar = <GregorianCalendar> {
         yearSuffix: {
             BC: 'bc',
             AD: 'ad',
@@ -213,13 +152,73 @@ namespace calendar {
             YA: calendar.yearSuffix.YA
         }
     };
+
+    gregorian.monthName = <MonthName> {
+        January: 'Jan',
+        February: 'Feb',
+        March: 'Mar',
+        April: 'Apr',
+        May: 'May',
+        June: 'Jun',
+        July: 'Jul',
+        August: 'Aug',
+        September: 'Sep',
+        October: 'Oct',
+        November: 'Nov',
+        December: 'Dec'
+    };
+
+    gregorian.monthNameUpper = <MonthName>{
+        January: 'JAN',
+        February: 'FEB',
+        March: 'MAR',
+        April: 'APR',
+        May: 'MAY',
+        June: 'JUN',
+        July: 'JUL',
+        August: 'AUG',
+        September: 'SEP',
+        October: 'OCT',
+        November: 'NOV',
+        December: 'DEC'
+    };
+
+    gregorian.month = [
+        gregorian.monthName.January,
+        gregorian.monthName.February,
+        gregorian.monthName.March,
+        gregorian.monthName.April,
+        gregorian.monthName.May,
+        gregorian.monthName.June,
+        gregorian.monthName.July,
+        gregorian.monthName.August,
+        gregorian.monthName.September,
+        gregorian.monthName.October,
+        gregorian.monthName.November,
+        gregorian.monthName.December,
+    ];
+
+    gregorian.daysInMonth = [
+        31,
+        28,
+        31,
+        30,
+        31,
+        30,
+        31,
+        31,
+        30,
+        31,
+        30,
+        31
+    ];
 }
 
 // ==========================================================================
 // HijriCalendar implementation
 // ==========================================================================
 namespace calendar {
-    export var hijri: HijriCalendar = {
+    export var hijri: HijriCalendar = <HijriCalendar> {
 
         monthName: <HijriMonthName> {
             Muharram: 'Muh',
@@ -235,21 +234,6 @@ namespace calendar {
             DhualQadah: 'Dqa',
             DhualHijjah: 'Dhj'
         },
-
-        month: [
-            hijri.monthName.Muharram,
-            hijri.monthName.Safar,
-            hijri.monthName.RabialAwwal,
-            hijri.monthName.RabialSaani,
-            hijri.monthName.JamadaalAwwal,
-            hijri.monthName.JamadaalSaani,
-            hijri.monthName.Rajab,
-            hijri.monthName.Shaban,
-            hijri.monthName.Ramadan,
-            hijri.monthName.Shawwal,
-            hijri.monthName.DhualQadah,
-            hijri.monthName.DhualHijjah
-        ],
 
         yearSuffix: {
             BH: 'bh',
@@ -333,5 +317,20 @@ namespace calendar {
             }
         }
     };
+
+    hijri.month = [
+        hijri.monthName.Muharram,
+        hijri.monthName.Safar,
+        hijri.monthName.RabialAwwal,
+        hijri.monthName.RabialSaani,
+        hijri.monthName.JamadaalAwwal,
+        hijri.monthName.JamadaalSaani,
+        hijri.monthName.Rajab,
+        hijri.monthName.Shaban,
+        hijri.monthName.Ramadan,
+        hijri.monthName.Shawwal,
+        hijri.monthName.DhualQadah,
+        hijri.monthName.DhualHijjah
+    ];
 }
     
