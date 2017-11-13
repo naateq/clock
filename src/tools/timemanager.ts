@@ -105,7 +105,7 @@ namespace timemanager {
             var jumpUnits = config.timerUpdateInterval * config.cosmicMillisPerClockMillis * config.clockTimeCompressionFactor;
             var elapsed: CosmicTime = tick(jumpUnits);
 
-            if (config.currTime.totalInMillis >= config.toTime.totalInMillis) {
+            if (config.currTime.totalInMillis() >= config.toTime.totalInMillis()) {
                 clearInterval(jsIntervalIdx);
                 config.currTime = config.toTime;
             }
@@ -163,15 +163,15 @@ namespace debug {
     /** Converts a CosmicTime object to a string and optionally logs it to console */
     export function cosmicTimeToString(ts: CosmicTime, log?: boolean): string {
         var str: string = '';
-        str += (<any>ts)._year !== undefined ? (<any>ts).year : 'xx';
-        str += '-' + ((<any>ts).month !== undefined ? (<any>ts).month : 'xx');
-        str += '-' + ((<any>ts).day !== undefined || (<any>ts).day == null ? (<any>ts).day : 'xx');
+        str += (<any>ts)._year !== undefined ? (<any>ts)._year : 'xx';
+        str += '-' + ((<any>ts)._month !== undefined ? (<any>ts)._month : 'xx');
+        str += '-' + ((<any>ts)._day   !== undefined ? (<any>ts)._day : 'xx');
 
-        str += ' ' + ((<any>ts).hour !== undefined ? (<any>ts).hour : 'xx');
-        str += ':' + ((<any>ts).minute !== undefined ? (<any>ts).minute : 'xx');
-        str += ':' + ((<any>ts).second !== undefined ? (<any>ts).second : 'xx');
+        str += ' ' + ((<any>ts)._hour !== undefined ? (<any>ts)._hour : 'xx');
+        str += ':' + ((<any>ts)._minute !== undefined ? (<any>ts)._minute : 'xx');
+        str += ':' + ((<any>ts)._second !== undefined ? (<any>ts)._second : 'xx');
 
-        str += ' (' + (ts.isHijri ? 'AH/BH ' : 'AD/BC ') + ts.totalInMillis + ')';
+        str += ' (' + (ts.isHijri ? 'AH/BH ' : 'AD/BC ') + ts.totalInMillis() + ')';
 
         if (log) {
             console.log(str);

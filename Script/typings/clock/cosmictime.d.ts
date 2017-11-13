@@ -1,10 +1,16 @@
 interface CosmicTime {
     timestr: string;
-
     isEndTime: boolean;
     isHijri: boolean;
 
     //constructor: (timeStr: string, isEndTime?: boolean);
+    year(): number;
+    month(): number;
+    day(): number;
+    hour(): number;
+    minute(): number;
+    second(): number;
+    millis(): number;
 
     yearInMillis(): number;
     monthInMillis(): number;
@@ -12,7 +18,6 @@ interface CosmicTime {
     hourInMillis(): number;
     minuteInMillis(): number;
     secondInMillis(): number;
-    millis: number;
 
     totalInMillis(): number;
     lazyAddTotalMillis(millisTobeAdded: number): void;

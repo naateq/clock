@@ -28,11 +28,11 @@ class CosmicTimeImpl implements CosmicTime {
     _year: number;
     _month: number;
     _day: number;
-
     _hour: number;
     _minute: number;
     _second: number;
-
+    _millis: number;
+    
     _yearInMillis: number;
     _monthInMillis: number;
     _dayInMillis: number;
@@ -40,16 +40,30 @@ class CosmicTimeImpl implements CosmicTime {
     _hourInMillis: number;
     _minuteInMillis: number;
     _secondInMillis: number;
-    millis: number;
-
 
     constructor (timeStr: string, isEndTime?: boolean) {
-        this._isDirty = true;
-        this._lazyMillisToAdd = 0;
+        this.init();
         this.timestr = timeStr || calendar.date.nowAsString(false);
         this.isEndTime = isEndTime || false;
 
         this.parse();
+    }
+
+    private init(): void {
+        this._isDirty = true;
+        this.isHijri = false;
+
+        this._isYearOnlyDate = false;
+        this._lazyMillisToAdd = 0;
+        this._totalInMillis = 0;
+
+        this._year = 0;
+        this._month = 0;
+        this._day = 0;
+        this._hour = 0;
+        this._minute = 0;
+        this._second = 0;
+        this._millis = 0;
     }
 
     private parseYear (): void {
@@ -101,14 +115,49 @@ class CosmicTimeImpl implements CosmicTime {
         this._hour = 0;
         this._minute = 0;
         this._second = 0;
-        this.millis = 0;
+        this._millis = 0;
 
         if (this.isEndTime) {
             this._hour = 23;
             this._minute = 59;
             this._second = 59;
-            this.millis = 999;
+            this._millis = 999;
         }
+    }
+
+    year (): number {
+        this.ensureNotDirty();
+        return this._year;        
+    }
+
+    month (): number {
+        this.ensureNotDirty();
+        return this._month;        
+    }
+
+    day (): number {
+        this.ensureNotDirty();
+        return this._day;        
+    }
+
+    hour (): number {
+        this.ensureNotDirty();
+        return this._hour;        
+    }
+
+    minute (): number {
+        this.ensureNotDirty();
+        return this._minute;        
+    }
+
+    second (): number {
+        this.ensureNotDirty();
+        return this._second;        
+    }
+
+    millis (): number {
+        this.ensureNotDirty();
+        return this._millis;
     }
 
     yearInMillis (): number {
@@ -167,15 +216,14 @@ class CosmicTimeImpl implements CosmicTime {
 
     totalInMillis(): number {
 
-        if (this._totalInMillis === undefined) {
+        if (!this._totalInMillis) {
             this._totalInMillis = this.yearInMillis() +
                 this.monthInMillis() +
                 this.dayInMillis() +
-                // short-circuit the following as they are set by default
-                this._hourInMillis + //this.hourInMillis() +
-                this._minuteInMillis + //this.minuteInMillis() +
-                this._secondInMillis + // this.secondInMillis() +
-                this.millis;
+                this.hourInMillis() +
+                this.minuteInMillis() +
+                this.secondInMillis() +
+                this.millis();
 
             this._isDirty = false;
         }
@@ -193,9 +241,9 @@ class CosmicTimeImpl implements CosmicTime {
         }
 
         this._isDirty = true;
-        var remainingMillis: number = this._totalInMillis + this._lazyMillisToAdd;
+        this._totalInMillis += this._lazyMillisToAdd;
         this._lazyMillisToAdd = 0;
-        this._totalInMillis = undefined;
+        var remainingMillis: number = this._totalInMillis;
 
         var bceSign: number = +1;
 
@@ -229,6 +277,6 @@ class CosmicTimeImpl implements CosmicTime {
         remainingMillis -= this.secondInMillis();
         remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
 
-        this.millis =  remainingMillis > 999 ? 999 : remainingMillis;
+        this._millis =  remainingMillis > 999 ? 999 : remainingMillis;
     }
 }

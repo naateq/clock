@@ -69,7 +69,7 @@ String.prototype.join = function(delimiter: string, ...args: object[]) : string 
 
 String.prototype.parseNumber = function(): number {
 
-    if (this.length) {
+    if (!this.length) {
         return number.Zero;
     }
 

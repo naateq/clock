@@ -23,7 +23,7 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
     var dialMarkersFillStyle: string = '#ffffff';
     var dialAmPmMarker: string = '';
 
-    var currHour = clockRunner.currentClockTime.hourInMillis() / number.MillisInHour;
+    var currHour = clockRunner.currentClockTime.hour();
     if (currHour == 0) {
         dialAmPmMarker = '00';
     }
@@ -55,10 +55,10 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
         timemanager.config.clockTimeCompressionFactor >= 60);
     
     // display year at 6`o clock
-    clockRunner.clockView.renderTextOnRadial(6, calendar.fromParsedYear(timemanager.config.currTime.yearInMillis()/number.MillisInYear), dialMarkersFillStyle);
+    clockRunner.clockView.renderTextOnRadial(6, calendar.fromParsedYear(timemanager.config.currTime.year()), dialMarkersFillStyle);
 
     if (timemanager.config.clockTimeCompressionFactor < 1800 && clockRunner.cosmicMonthsPerClockUnit <= 1) {
-        clockRunner.clockView.renderTextOnRadial(9, ''+(1 + timemanager.config.currTime.monthInMillis()/number.MillisInMonth30));
+        clockRunner.clockView.renderTextOnRadial(9, ''+(1 + timemanager.config.currTime.month()));
     }
 };
 
