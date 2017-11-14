@@ -37,7 +37,7 @@ interface AnalogClockRunner extends Runner {
     totalHours: number;
     cosmicMonthsPerClockUnit: number;
     cosmicMillisPerClockMillis: number;
-    currentClockTime: CosmicTime;
+    currentClockTime: ClockTimeObject; //CosmicTime;
 
     clock: (canvas: HTMLCanvasElement, clockHours: number) => void;
 }

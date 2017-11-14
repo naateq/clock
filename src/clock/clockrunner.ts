@@ -15,7 +15,7 @@ clockRunner.init = function(): void {
 
 clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): void {
     // translate cosmic time into clock time
-    clockRunner.currentClockTime = createZeroCosmicTime();
+    clockRunner.currentClockTime = new ClockTime(); //createZeroCosmicTime();
     clockRunner.currentClockTime.addMillis(elapsedTime.totalInMillis() / clockRunner.cosmicMillisPerClockMillis);
     
     var dialFillStyle: string = '#666699';
@@ -23,9 +23,9 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
     var dialMarkersFillStyle: string = '#ffffff';
     var dialAmPmMarker: string = '';
 
-    var currHour = clockRunner.currentClockTime.hour();
+    var currHour = clockRunner.currentClockTime.hour; // hour() for CosmicTime
     if (currHour == 0) {
-        dialAmPmMarker = '00';
+        dialAmPmMarker = 'AM';
     }
     else if (currHour < 12) {
         dialAmPmMarker = 'AM';
@@ -45,28 +45,30 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
 
     // update clock handles
     clockRunner.clockView.drawFace(true, dialFillStyle, borderFillStyle);
-
     clockRunner.clockView.renderMarkersOnDial(currHour, false, dialMarkersFillStyle, dialAmPmMarker);
+
+    var clockTimeCompressionFactor = timemanager.config.clockTimeCompressionFactor;
     clockRunner.clockView.renderHandsOnDial(
         currHour,
-        clockRunner.currentClockTime.minuteInMillis() / number.MillisInMinute,
-        clockRunner.currentClockTime.secondInMillis() / number.MillisInSecond,
-        timemanager.config.clockTimeCompressionFactor >= 3600,
-        timemanager.config.clockTimeCompressionFactor >= 60);
+        clockRunner.currentClockTime.minute,
+        clockRunner.currentClockTime.second,
+        clockTimeCompressionFactor >= 3600,
+        clockTimeCompressionFactor >= 60);
     
     // display year at 6`o clock
-    clockRunner.clockView.renderTextOnRadial(6, calendar.fromParsedYear(timemanager.config.currTime.year()), dialMarkersFillStyle);
+    clockRunner.clockView.renderTextOnRadial(6, calendar.fromParsedYear(currTime.year()), dialMarkersFillStyle);
 
-    if (timemanager.config.clockTimeCompressionFactor < 1800 && clockRunner.cosmicMonthsPerClockUnit <= 1) {
-        clockRunner.clockView.renderTextOnRadial(9, ''+(1 + timemanager.config.currTime.month()));
+    if (clockTimeCompressionFactor < 1800 && clockRunner.cosmicMonthsPerClockUnit <= 1) {
+        clockRunner.clockView.renderTextOnRadial(9, '' + (1 + currTime.month()));
     }
 };
 
+// Used in main
 clockRunner.clock = function(canvas: HTMLCanvasElement, clockHours: number) {
     clockRunner.clockView = new clock.Analog(canvas);
     clockRunner.totalHours = clockHours;
     clockRunner.cosmicMillisPerClockMillis = 1;
-    clockRunner.currentClockTime = createZeroCosmicTime();
+    clockRunner.currentClockTime = new ClockTime(); //createZeroCosmicTime();
 
     timemanager.addRunner(this);
 }

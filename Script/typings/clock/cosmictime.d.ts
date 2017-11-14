@@ -42,3 +42,12 @@ interface Timespan {
     second: number;
     millis: number;
 }
+
+interface ClockTimeObject {
+    hour: number;
+    minute: number;
+    second: number;
+    millis: number;
+
+    addMillis(millisToAdd: number): void;
+}

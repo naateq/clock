@@ -12,8 +12,8 @@ function onWindowLoad() {
     var hist_cosmos: History = histories['cosmos'];
     var hist_hijri: History = histories['hijri'];
 
-    /* * / runHistory(hist_cosmos); /* */
-    /* */ runHistory(hist_hijri); /* */
+    /* */ runHistory(hist_cosmos); /* */
+    /* * / runHistory(hist_hijri); /* */
 };
 
 /** Runs the specified history or the time-range from the UI text inputs */
@@ -50,12 +50,13 @@ function runHistory(ahist: History) {
     };
 
     // Prepare the clock for the canvas area
-    clockRunner.clock(canvas, 24);
+    clockRunner.clock(canvas, 12);
 
     // Prepare the history for the contents area
-    var contentsEl: HTMLElement = <HTMLInputElement>document.getElementById('contents');
-    historyRunner.historyView(contentsEl, ahist);
-
+    if (ahist.eventList.length > 0) {
+        var contentsEl: HTMLElement = <HTMLInputElement>document.getElementById('contents');
+        historyRunner.historyView(contentsEl, ahist);
+    }
     // Run the timer with a default speed -- inits the runners before running
     timemanager.setSpeed();
     timemanager.runTime();

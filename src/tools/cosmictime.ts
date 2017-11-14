@@ -243,3 +243,36 @@ class CosmicTimeImpl implements CosmicTime {
         this._isDirty = false;
     }
 }
+
+class ClockTime implements ClockTimeObject {
+    hour: number;
+    minute: number;
+    second: number;
+    millis: number;
+
+    totalMillis: number;
+
+    constructor() {
+        this.hour = 0;
+        this.minute = 0;
+        this.second = 0;
+        this.millis = 0;
+        this.totalMillis = 0;
+    }
+
+    addMillis (millisToAdd: number): void {
+        this.totalMillis += millisToAdd;
+        var remainingMillis = this.totalMillis;
+
+        this.hour = Math.floor(remainingMillis / number.MillisInHour);
+        remainingMillis = remainingMillis % number.MillisInHour;
+
+        this.minute = Math.floor(remainingMillis / number.MillisInMinute);
+        remainingMillis = remainingMillis % number.MillisInMinute;
+
+        this.second = Math.floor(remainingMillis / number.MillisInSecond);
+        remainingMillis = remainingMillis % number.MillisInSecond;
+
+        this.millis =  remainingMillis > 999 ? 999 : remainingMillis;
+    }
+}
