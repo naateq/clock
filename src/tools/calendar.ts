@@ -14,6 +14,7 @@ namespace calendar {
     date.MillisInCurrYear = date.NextYear.getTime() - date.NewYear.getTime();
     date.CurrYearFraction = (date.Today.getTime() - date.NewYear.getTime()) / date.MillisInCurrYear;
     date.FullYearToDate =  date.NewYear.getFullYear() + date.CurrYearFraction;
+
     /** Returns the date as {yyyy-M-dTH:m:s.f[z]} */
     date.nowAsString = function (utc?: boolean): string {
         var d = date.Now;
@@ -60,6 +61,7 @@ namespace calendar {
         YA: 'ya'
     };
 
+    /** Parses a year string */
     export var parseYear: ParseYear = function(yearStr: string): number {
         yearStr = yearStr.toLowerCase();
         var result: number = 0;

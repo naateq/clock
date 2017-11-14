@@ -6,6 +6,7 @@ var historyRunner: HistoryRunner = <HistoryRunner>{};
 
 historyRunner.init = function(): void {
     this.currEventIdx = 0;
+
     for (var i = 0; i < this.hist.eventList.length; i++) {
         this.hist.eventList[i].view.rendered = false;
     }
@@ -17,22 +18,30 @@ historyRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): 
         return;
     
     // Render all history that elapsed between the time update
-    var currYear = currTime.yearInMillis() / number.MillisInYear;
+    var currYear = currTime.year();
+
     while (this.currEventIdx < this.hist.eventList.length && this.hist.eventList[this.currEventIdx].year <= currYear) {
         var he: HistoryEvent = this.hist.eventList[this.currEventIdx];
+
+        // If not rendered yet, and is requested to be rendered by the history, then process
         if (!he.view.rendered && he.render) {
 
             // First, slow down the speed (if requested)            
             if (he.speed === undefined || he.speed === null) {
+
+                // If there's any default speed set by this history, set that; else use the external default speed
                 if (this.hist.speed) {
+                    // history default speed
                     timemanager.config.clockTimeCompressionFactor = this.hist.speed;
                 }
                 else {
+                    // external default speed
                     timemanager.setSpeed();
                 }
             }
             else if (he.speed < 0) {
-                timemanager.setSpeed();
+                // don't disturb the speed or reset to default?
+                //timemanager.setSpeed();
             }
             else {
                 timemanager.config.clockTimeCompressionFactor = he.speed;

@@ -57,8 +57,8 @@ namespace timemanager {
             unitsToJump = 1;
         }
 
-        config.currTime.lazyAddTotalMillis(unitsToJump);
-        config.elapsedTime.lazyAddTotalMillis(unitsToJump);
+        config.currTime.addMillis(unitsToJump);
+        config.elapsedTime.addMillis(unitsToJump);
         return config.elapsedTime;
     };
 
@@ -70,7 +70,7 @@ namespace timemanager {
         }
 
         var currTime:CosmicTime = createZeroCosmicTime();
-        currTime.lazyAddTotalMillis(elapsedMillis);
+        currTime.addMillis(elapsedMillis);
         return currTime;
     };
 
@@ -142,6 +142,7 @@ namespace timemanager {
         timemanager.config.timePaused = !timemanager.config.timePaused;
 
         if (!timemanager.config.timePaused) {
+            // whatever the current speed, if paused, restart with the speed set in UI or default one
             setSpeed();
         }
 

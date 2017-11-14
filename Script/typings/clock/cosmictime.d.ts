@@ -18,9 +18,10 @@ interface CosmicTime {
     hourInMillis(): number;
     minuteInMillis(): number;
     secondInMillis(): number;
-
+    
     totalInMillis(): number;
-    lazyAddTotalMillis(millisTobeAdded: number): void;
+
+    addMillis(millisTobeAdded: number): void;
 }
 
 interface CosmicTimeConstructor {

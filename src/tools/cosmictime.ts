@@ -22,7 +22,6 @@ class CosmicTimeImpl implements CosmicTime {
     _isYearOnlyDate: boolean;
     
     _isDirty: boolean;
-    _lazyMillisToAdd: number;
     _totalInMillis: number;
     
     _year: number;
@@ -36,27 +35,16 @@ class CosmicTimeImpl implements CosmicTime {
     _yearInMillis: number;
     _monthInMillis: number;
     _dayInMillis: number;
-
     _hourInMillis: number;
     _minuteInMillis: number;
     _secondInMillis: number;
 
     constructor (timeStr: string, isEndTime?: boolean) {
-        this.init();
-        this.timestr = timeStr || calendar.date.nowAsString(false);
-        this.isEndTime = isEndTime || false;
-
-        this.parse();
-    }
-
-    private init(): void {
         this._isDirty = true;
         this.isHijri = false;
-
         this._isYearOnlyDate = false;
-        this._lazyMillisToAdd = 0;
-        this._totalInMillis = 0;
 
+        this._totalInMillis = 0;
         this._year = 0;
         this._month = 0;
         this._day = 0;
@@ -64,26 +52,11 @@ class CosmicTimeImpl implements CosmicTime {
         this._minute = 0;
         this._second = 0;
         this._millis = 0;
-    }
 
-    private parseYear (): void {
-        this.isHijri = false;
+        this.timestr = timeStr || calendar.date.nowAsString(false);
+        this.isEndTime = isEndTime || false;
 
-        if (this.timestr.indexOf('h') >= 0) {
-            this.isHijri = true;
-        }
-
-        var idx = this.timestr.indexOf('-');
-        idx = idx > 0 ? idx : this.timestr.indexOf('/');
-        var yearPart = this.timestr;
-
-        if (idx <= 0) {
-            this._isYearOnlyDate = true;
-            idx = this.timestr.length;
-            yearPart = this.timestr.substr(0, idx) + (this.isHijri ? 'h' : '');
-        }
-
-        this._year = calendar.parseYear(yearPart);
+        this.parse();
     }
 
     private parse (): void {
@@ -104,12 +77,13 @@ class CosmicTimeImpl implements CosmicTime {
             
         // If _month and _day are sepcified, ignore isEndTime flag
         this._month = (this._month !== undefined ? this._month : 
-            this.isEndTime ? 12 : 1)
-            - 1;
+            this.isEndTime ? 12 : 1);
+        this._month = !this._month ? 0 : this._month - 1;
+        
         this._day = (this._day !== undefined ? this._day :
             !this.isEndTime ? 1 :
-                this.isHijri ? 30 : calendar.gregorian.daysInMonth[this._month])
-            - 1;
+                this.isHijri ? 30 : calendar.gregorian.daysInMonth[this._month]);
+        this._day = !this._day ? 0 : this._day - 1;
 
         // Set default _hour, _minute, _second and millis (ignore if provided as input for now)
         this._hour = 0;
@@ -123,6 +97,28 @@ class CosmicTimeImpl implements CosmicTime {
             this._second = 59;
             this._millis = 999;
         }
+
+        this._isDirty = false;
+    }
+
+    private parseYear (): void {
+        this.isHijri = false;
+
+        if (this.timestr.indexOf('h') >= 0) {
+            this.isHijri = true;
+        }
+
+        var idx = this.timestr.indexOf('-');
+        idx = idx > 0 ? idx : this.timestr.indexOf('/');
+        var yearPart = this.timestr;
+
+        if (idx <= 0) {
+            this._isYearOnlyDate = true;
+            idx = this.timestr.length;
+            yearPart = this.timestr.substr(0, idx) + (this.isHijri ? 'h' : '');
+        }
+
+        this._year = calendar.parseYear(yearPart);
     }
 
     year (): number {
@@ -161,90 +157,62 @@ class CosmicTimeImpl implements CosmicTime {
     }
 
     yearInMillis (): number {
-        this.ensureNotDirty();
-        if (this._yearInMillis === undefined || this._isDirty) {
-            this._yearInMillis = Math.abs(this._year) * number.MillisInYear;
-        }
-
-        return this._yearInMillis;
+        return this.year() * number.MillisInYear;
     }
 
     monthInMillis (): number {
-        this.ensureNotDirty();
-        if (this._monthInMillis === undefined || this._isDirty) {
-            this._monthInMillis = this._month * number.MillisInMonth;
-        }
-
-        return this._monthInMillis;
+        return this.month() * number.MillisInMonth;
     }
 
     dayInMillis (): number {
-        this.ensureNotDirty();
-        if (this._dayInMillis === undefined || this._isDirty) {
-            this._dayInMillis = this._day * number.MillisInDay;
-        }
-
-        return this._dayInMillis;
+        return this.day() * number.MillisInDay;
     }
 
     hourInMillis (): number {
-        this.ensureNotDirty();
-        if (this._hourInMillis === undefined || this._isDirty) {
-            this._hourInMillis = this._hour * number.MillisInHour;
-        }
-
-        return this._hourInMillis;
+        return this.hour() * number.MillisInHour;
     }
 
     minuteInMillis (): number {
-        this.ensureNotDirty();
-        if (this._minuteInMillis === undefined || this._isDirty) {
-            this._minuteInMillis = this._minute * number.MillisInMinute;
-        }
-
-        return this._minuteInMillis;
+        return this.minute() * number.MillisInMinute;
     }
 
     secondInMillis (): number {
-        this.ensureNotDirty();
-        if (this._secondInMillis === undefined || this._isDirty) {
-            this._secondInMillis = this._second * number.MillisInSecond;
-        }
-
-        return this._secondInMillis;
+        return this.second() * number.MillisInSecond;
     }
 
     totalInMillis(): number {
-
+        // calculate only once - the first time. 
+        // Afterwards, the only time the value will change is when addMillis() is called, and that method
+        // will update this value. hence no need for anyting here 
         if (!this._totalInMillis) {
-            this._totalInMillis = this.yearInMillis() +
+            this._totalInMillis = 
+                this.yearInMillis() +
                 this.monthInMillis() +
                 this.dayInMillis() +
                 this.hourInMillis() +
                 this.minuteInMillis() +
                 this.secondInMillis() +
                 this.millis();
-
-            this._isDirty = false;
         }
 
-        return (this._totalInMillis + this._lazyMillisToAdd);
+        return this._totalInMillis;
     }
 
-    lazyAddTotalMillis(millisTobeAdded: number): void {
-        this._lazyMillisToAdd += millisTobeAdded;
+    addMillis(millisTobeAdded: number): void {
+        this._totalInMillis = this.totalInMillis() + millisTobeAdded;
+        this._isDirty = true;
     }
 
+    /** 
+     * Returns with no-op if time hasn't changed. Else, updates all time fields.
+     */
     private ensureNotDirty(): void {
-        if (!this._lazyMillisToAdd) {
+
+        if (!this._isDirty) {
             return;
         }
 
-        this._isDirty = true;
-        this._totalInMillis += this._lazyMillisToAdd;
-        this._lazyMillisToAdd = 0;
-        var remainingMillis: number = this._totalInMillis;
-
+        var remainingMillis: number = this.totalInMillis();
         var bceSign: number = +1;
 
         if (remainingMillis < 0) {
@@ -254,29 +222,24 @@ class CosmicTimeImpl implements CosmicTime {
 
         //remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
         this._year = bceSign * Math.floor(remainingMillis / number.MillisInYear);
-        remainingMillis -= this.yearInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInYear
 
         this._month = Math.floor(remainingMillis / number.MillisInMonth);
-        remainingMillis -= this.monthInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInMonth;
 
         this._day = Math.floor(remainingMillis / number.MillisInDay);
-        remainingMillis -= this.dayInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInDay
 
         this._hour = Math.floor(remainingMillis / number.MillisInHour);
-        remainingMillis -= this.hourInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInHour;
 
         this._minute = Math.floor(remainingMillis / number.MillisInMinute);
-        remainingMillis -= this.minuteInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInMinute;
 
         this._second = Math.floor(remainingMillis / number.MillisInSecond);
-        remainingMillis -= this.secondInMillis();
-        remainingMillis = remainingMillis <= 0 ? 0 : remainingMillis;
+        remainingMillis = remainingMillis % number.MillisInSecond;
 
         this._millis =  remainingMillis > 999 ? 999 : remainingMillis;
+        this._isDirty = false;
     }
 }

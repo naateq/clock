@@ -16,7 +16,7 @@ clockRunner.init = function(): void {
 clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): void {
     // translate cosmic time into clock time
     clockRunner.currentClockTime = createZeroCosmicTime();
-    clockRunner.currentClockTime.lazyAddTotalMillis(elapsedTime.totalInMillis() / clockRunner.cosmicMillisPerClockMillis);
+    clockRunner.currentClockTime.addMillis(elapsedTime.totalInMillis() / clockRunner.cosmicMillisPerClockMillis);
     
     var dialFillStyle: string = '#666699';
     var borderFillStyle: string = '#9999ff'; // '#66669f';

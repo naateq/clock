@@ -11,7 +11,7 @@ histories['hijri'] = history_of_hijri_years;
 
 history_of_hijri_years.eventList = [
 
-    { render: true, year: '570', msg: 'Birthday', speed: null },
+    { render: true, year: '570', msg: 'Birthday', speed: 1 },
     { render: true, year: '583', msg: 'Travel to Syria', speed: null },
     { render: true, year: '595', msg: 'Marriage', speed: null },
     { render: true, year: '610', msg: 'First Revelation', speed: null },
