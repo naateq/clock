@@ -78,8 +78,17 @@ namespace timemanager {
     var jsIntervalIdx: number;
     var runners: Runner[] = [];
 
+    export var clearTimer: Function = function(): void {
+        if (jsIntervalIdx) {
+            clearInterval(jsIntervalIdx);
+            jsIntervalIdx = 0;
+        }
+    }
+
     export var addRunner: AddRunner = function(runner: Runner) {
-        runners.push(runner);
+        if (runners.indexOf(runner) < 0) {
+            runners.push(runner);
+        }
     };
 
     /** Calls init on all runners and then starts the timer updating every 100 millis */
@@ -106,7 +115,7 @@ namespace timemanager {
             var elapsed: CosmicTime = tick(jumpUnits);
 
             if (config.currTime.totalInMillis() >= config.toTime.totalInMillis()) {
-                clearInterval(jsIntervalIdx);
+                clearTimer();
                 config.currTime = config.toTime;
             }
 

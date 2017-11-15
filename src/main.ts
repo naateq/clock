@@ -9,17 +9,31 @@ function onWindowLoad() {
     // If history argument is provided, this time range is ignored
     browser.updatePageUsingQueryParameters([ 'fromYear', 'toYear', 'speed']);
 
-    var hist_cosmos: History = histories['cosmos'];
-    var hist_hijri: History = histories['hijri'];
+    // Initialize clock canvas, and add callbacks/listeners
+    var canvas = <HTMLCanvasElement>document.getElementById("canvas");
+    canvas.onclick = function() {
+        timemanager.toggleTimePause();
+    };
 
-    /* */ runHistory(hist_cosmos); /* */
-    /* * / runHistory(hist_hijri); /* */
+    // Prepare the clock for the canvas area
+    clockRunner.clock(canvas, 12);
+    
+    runHistory();
 };
 
 /** Runs the specified history or the time-range from the UI text inputs */
-function runHistory(ahist: History) {
+function runHistory() {
+    timemanager.clearTimer();
+    var ahist: History = undefined;
+    var runWhat: HTMLSelectElement = <HTMLSelectElement>document.getElementById("runWhat");
 
-    // If history argument is not provided, run the clock from UI input elements - hover over 'Cosmic Clock' for text inputs
+    if (runWhat) {
+        var option = runWhat.value;
+        if (histories[option]) {
+            ahist = histories[option];
+        }
+    }
+
     if (!ahist) {
         ahist = <History> {
             title: 'History',
@@ -27,7 +41,7 @@ function runHistory(ahist: History) {
             ends: undefined,
             speed: 1,
             eventList: []
-        };
+        };    
     }
 
     var fromYearText: string = ahist.begins;
@@ -43,20 +57,14 @@ function runHistory(ahist: History) {
     timemanager.init(fromYearText, toYearText);
     debug.logTimers();
 
-    // Initialize clock canvas, and add callbacks/listeners
-    var canvas = <HTMLCanvasElement>document.getElementById("canvas");
-    canvas.onclick = function() {
-        timemanager.toggleTimePause();
-    };
-
-    // Prepare the clock for the canvas area
-    clockRunner.clock(canvas, 12);
-
+    var contentsEl: HTMLElement = <HTMLInputElement>document.getElementById('contents');
+    contentsEl.innerHTML = '';
+    
     // Prepare the history for the contents area
     if (ahist.eventList.length > 0) {
-        var contentsEl: HTMLElement = <HTMLInputElement>document.getElementById('contents');
         historyRunner.historyView(contentsEl, ahist);
     }
+
     // Run the timer with a default speed -- inits the runners before running
     timemanager.setSpeed();
     timemanager.runTime();

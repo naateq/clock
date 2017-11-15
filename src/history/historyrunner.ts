@@ -62,12 +62,14 @@ historyRunner.historyView = function(contentsEl: HTMLElement, historyObj: Histor
     this.hist = historyObj;
 
     var lastHe: HistoryEvent = this.hist.eventList[this.hist.eventList.length  - 1];
-    var endHe: HistoryEvent = <HistoryEvent>{
-        render: true,
-        year: lastHe.year,
-        msg: 'END'
-    };
-    this.hist.eventList.push(endHe);
+    if (lastHe.msg != 'END') {
+        var endHe: HistoryEvent = <HistoryEvent>{
+            render: true,
+            year: lastHe.year,
+            msg: 'END'
+        };
+        this.hist.eventList.push(endHe);
+    }
 
     for (var i = 0; i < this.hist.eventList.length; i++) {
         var he: HistoryEvent = this.hist.eventList[i];
