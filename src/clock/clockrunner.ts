@@ -24,8 +24,14 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
     var dialAmPmMarker: string = '';
 
     var currHour = clockRunner.currentClockTime.hour; // hour() for CosmicTime
-    if (currHour == 0) {
-        dialAmPmMarker = 'AM';
+    if (currHour == 0 || currHour >= 23) {
+        dialAmPmMarker = ' ';
+    }
+    else if (currHour < 3) {
+        dialAmPmMarker = ' ';
+    }
+    else if (currHour < 6) {
+        dialAmPmMarker = 'Dawn';
     }
     else if (currHour < 12) {
         dialAmPmMarker = 'AM';
@@ -33,11 +39,14 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
     else if (currHour < 13) {
         dialAmPmMarker = 'Noon';
     }
-    else {
+    else if (currHour < 19) {
         dialAmPmMarker = 'PM';
     }
+    else {
+        dialAmPmMarker = 'Night';
+    }
     
-    if (currHour <= 5 || currHour >= 19) {
+    if (currHour <= 6 || currHour >= 19) {
         dialFillStyle = '#363666';
         //borderFillStyle = '#66669f';
         dialMarkersFillStyle = '#cecece';
@@ -52,13 +61,14 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
         currHour,
         clockRunner.currentClockTime.minute,
         clockRunner.currentClockTime.second,
+        clockRunner.currentClockTime.millis,
         clockTimeCompressionFactor >= 3600,
         clockTimeCompressionFactor >= 60);
     
     // display year at 6`o clock
     clockRunner.clockView.renderTextOnRadial(6, calendar.fromParsedYear(currTime.year()), dialMarkersFillStyle);
 
-    if (clockTimeCompressionFactor < 1800 && clockRunner.cosmicMonthsPerClockUnit <= 1) {
+    if (clockTimeCompressionFactor <= 1800 && clockRunner.cosmicMonthsPerClockUnit <= 1) {
         clockRunner.clockView.renderTextOnRadial(9, '' + (1 + currTime.month()));
     }
 };

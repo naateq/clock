@@ -172,15 +172,26 @@ namespace clock {
         }
 
         /** ----------------------------------------------------------------- */
-        public renderHandsOnDial(hour: number, minute: number, second: number, ignoreMinute?: boolean, ignoreSecond?: boolean): void {
+        hourArc: number = Math.PI / 6; // 2 PI / 12
+        minutePerHourArc: number =  Math.PI / (6 * 60);
+        secondPerHourArc: number = Math.PI / (6 * 60 * 60);
+
+        minuteArc: number = Math.PI / 30; // 2 PI / 60
+        secondPerMinuteArc: number =  Math.PI / (30 * 60);
+
+        secondArc: number = Math.PI / 30; // minute and second both have 60 parts in an hour
+        millisPerSecondArc: number = Math.PI / (30 * 1000);
+
+        public renderHandsOnDial(hour: number, minute: number, second: number, millis?: number, ignoreMinute?: boolean, ignoreSecond?: boolean): void {
             var ctx = this.context;
             var radius = this.radius;
 
             //hour
             hour = hour % 12;
-            hour = (hour * Math.PI / 6) +
-                (minute * Math.PI / (6 * 60)) +
-                (second * Math.PI / (6 * 60 * 60));
+            // Arc for each hour: 2 PI / 12 or PI/6; arc for each minute: 60th of an hour; ...
+            hour = (hour * this.hourArc) +
+                (minute * this.minutePerHourArc) +
+                (second * this.secondPerHourArc);
 
             ctx.fillStyle = "blue";
             this.renderHand(ctx, hour, radius * 0.5, radius * 0.07);
@@ -189,7 +200,8 @@ namespace clock {
 
             //minute
             if (!ignoreMinute) {
-                minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+                minute = (minute * this.minuteArc) + 
+                    (second * this.secondPerMinuteArc);
                 this.renderHand(ctx, minute, radius * 0.8, radius * 0.07);
                 ctx.strokeStyle = '#cc3333';
                 ctx.stroke();
@@ -197,7 +209,8 @@ namespace clock {
                 // second
                 if (!ignoreSecond) {
                     ctx.fillStyle = "teal";
-                    second = (second * Math.PI / 30);
+                    second = (second * this.secondArc) +
+                        (millis * this.millisPerSecondArc);
                     this.renderHand(ctx, second, radius * 0.9, radius * 0.02);
                     ctx.strokeStyle = '#dd3333';
                     ctx.stroke();

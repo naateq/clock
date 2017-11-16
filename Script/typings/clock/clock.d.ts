@@ -20,7 +20,7 @@ declare namespace clock {
         drawBroderType01: (fillStyle: string) => void;
         drawBroderType02: (fillStyle: string) => void;
         renderMarkersOnDial: (hour: number, is24HourClock: boolean, fillStyle?: string, amPmMsg?: string) => void;
-        renderHandsOnDial: (hour: number, minute: number, second: number, ignoreMinute?: boolean, ignoreSecond?: boolean) => void;
+        renderHandsOnDial: (hour: number, minute: number, second: number, millis?: number, ignoreMinute?: boolean, ignoreSecond?: boolean) => void;
         renderTextOnRadial: (hour: number, msg?: string, fillStyle?: string) => void;
         //private renderHand: (ctx: number, pos: number, length: number, width: number) => void;
         //private drawCircle: (canvasCtx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number, startArc: number, endArc: number, counterClockwise: boolean, fillStyle: string) => void;

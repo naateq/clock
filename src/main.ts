@@ -7,7 +7,7 @@ function onWindowLoad() {
     // If time range is provided in the URL query part, set it to UI text inputs
     // This would work only if no history argument is provided to the runHistory method
     // If history argument is provided, this time range is ignored
-    browser.updatePageUsingQueryParameters([ 'fromYear', 'toYear', 'speed']);
+    browser.updatePageUsingQueryParameters([ 'fromYear', 'toYear', 'speed', 'runWhat' ]);
 
     // Initialize clock canvas, and add callbacks/listeners
     var canvas = <HTMLCanvasElement>document.getElementById("canvas");
@@ -16,7 +16,8 @@ function onWindowLoad() {
     };
 
     // Prepare the clock for the canvas area
-    clockRunner.clock(canvas, 12);
+    var clockHours: HTMLSelectElement = <HTMLSelectElement>document.getElementById("clockHours");
+    clockRunner.clock(canvas, clockHours.value.parseNumber() || 24);
     
     runHistory();
 };

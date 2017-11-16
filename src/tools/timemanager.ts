@@ -25,7 +25,7 @@ namespace timemanager {
         /** 
          * This is the lag (in millis) between updates. The clock is updated after this (system time) interval has elapsed
          */
-        timerUpdateInterval: <number> 100,
+        timerUpdateInterval: <number> 75,
     
         /** 
          * Indicates how many cosmic time should elapse for each millisecond of the clock cycle - 12h or 24h.
