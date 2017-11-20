@@ -23,8 +23,8 @@ namespace renderer {
         }
 
         public formatHistoryEvent(historyEvent: HistoryEvent) {
-            var str: string = '' +
-                historyEvent.view.yearText + ' ' +
+            var str: string =
+                '<span style="font-size:150%">' + historyEvent.view.yearText + '</span> ' +
                 historyEvent.msg;
             
             //str = `<div class="arow historymsg"  style="${this.textAnimationStyle}"}><div class="acell"><span>` + str + '</span></div></div>\n';

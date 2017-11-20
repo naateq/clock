@@ -21,35 +21,39 @@ clockRunner.update = function(elapsedTime: CosmicTime, currTime: CosmicTime): vo
     var dialFillStyle: string = '#666699';
     var borderFillStyle: string = '#9999ff'; // '#66669f';
     var dialMarkersFillStyle: string = '#ffffff';
-    var dialAmPmMarker: string = '';
+    var dialAmPmMarker: string = ' ';
 
     var currHour = clockRunner.currentClockTime.hour; // hour() for CosmicTime
-    if (currHour == 0 || currHour >= 23) {
-        dialAmPmMarker = ' ';
-    }
-    else if (currHour < 3) {
-        dialAmPmMarker = ' ';
-    }
-    else if (currHour < 6) {
-        dialAmPmMarker = 'Dawn';
-    }
-    else if (currHour < 12) {
-        dialAmPmMarker = 'AM';
-    }
-    else if (currHour < 13) {
-        dialAmPmMarker = 'Noon';
-    }
-    else if (currHour < 19) {
-        dialAmPmMarker = 'PM';
-    }
-    else {
-        dialAmPmMarker = 'Night';
-    }
-    
-    if (currHour <= 6 || currHour >= 19) {
-        dialFillStyle = '#363666';
-        //borderFillStyle = '#66669f';
-        dialMarkersFillStyle = '#cecece';
+
+    var dayNightView = (<HTMLSelectElement>document.getElementById("reflectDayNightOnDial")).value == 'true';
+    if (dayNightView) {
+        if (currHour == 0 || currHour >= 23) {
+            dialAmPmMarker = ' ';
+        }
+        else if (currHour < 3) {
+            dialAmPmMarker = ' ';
+        }
+        else if (currHour < 6) {
+            dialAmPmMarker = 'Dawn';
+        }
+        else if (currHour < 12) {
+            dialAmPmMarker = 'AM';
+        }
+        else if (currHour < 13) {
+            dialAmPmMarker = 'Noon';
+        }
+        else if (currHour < 19) {
+            dialAmPmMarker = 'PM';
+        }
+        else {
+            dialAmPmMarker = 'Night';
+        }
+        
+        if (currHour <= 6 || currHour >= 19) {
+            dialFillStyle = '#363666';
+            //borderFillStyle = '#66669f';
+            dialMarkersFillStyle = '#cecece';
+        }
     }
 
     // update clock handles

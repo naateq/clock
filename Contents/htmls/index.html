@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title>Cosmic Clock</title>
-    <link type="text/css" rel="stylesheet" href="version001.css">
-    <script type="text/javascript" src="clock.js"></script>
-    <script type="text/javascript" src="history_cosmos.js"></script>
-    <script type="text/javascript" src="history_hijri.js"></script>
+    <link type="text/css" rel="stylesheet" href="../styles/version001.css">
+    <script type="text/javascript" src="../../bin/clock.js"></script>
+    <script type="text/javascript" src="../histories/history_cosmos.js"></script>
+    <script type="text/javascript" src="../histories/history_hijri.js"></script>
 </head>
 <body onload="onWindowLoad();">
 
@@ -34,6 +34,8 @@
                             <option value="24" selected>24 hour</option>
                             <option value="12">12 hours</option>
                         </select>
+
+                        <div style="display:none">reflectDayNightOnDial<input type="text" name="reflectDayNightOnDial" id="reflectDayNightOnDial" value="true" /></div>
                         
                     </form>
                 </div>
